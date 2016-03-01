@@ -1,0 +1,15 @@
+(page "index.html")
+
+(html
+  (head
+    (link :href "app.css" :rel "stylesheet"))
+  ;; SAMPLE BODY
+  ;; TODO: clj classes to house arrays of tiles such as:
+  ;;       (character, enemies, walls, etc.)
+  ;;       then compile these arrays as strings or such
+  ;;       to be printed by the index.html
+  (body
+    (p "...........")   ;; periods (.) will represent empty space
+    (p "###########")   ;; hastags (#) will represent walls 
+    (p ".....@.....")   ;; at sign (@) will represent the player
+    (p "ABCDEFGHIJK"))) ;; letters (A) will represent various enemies
