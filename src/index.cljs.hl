@@ -1,15 +1,24 @@
-(page "index.html")
+(page "index.html"
+      (:require
+       [ascii-never-dies.tiles :as tiles]))
 
 (html
   (head
     (link :href "app.css" :rel "stylesheet"))
   ;; SAMPLE BODY
-  ;; TODO: clj classes to house arrays of tiles such as:
+  ;; TODO: cljs classes to house arrays of tiles such as:
   ;;       (character, enemies, walls, etc.)
   ;;       then compile these arrays as strings or such
   ;;       to be printed by the index.html
   (body
-    (p "...........")   ;; periods (.) will represent empty space
-    (p "###########")   ;; hastags (#) will represent walls 
-    (p ".....@.....")   ;; at sign (@) will represent the player
-    (p "ABCDEFGHIJK"))) ;; letters (A) will represent various enemies
+    ;; periods (.) will represent empty space
+    ;; hashtag (#) will represent walls 
+    ;; at sign (@) will represent the player
+    ;; letters (A) will represent various enemies
+    ;; These lines test grabbing strings from the vector lists of tiles
+    (p "TEST STRINGS FROM tiles.cljs:")
+    (p (text "~{tiles/strRowA}"))
+    (p (text "~{tiles/strRowB}"))
+    (p (text "~{tiles/strRowC}"))
+    (p (text "~{tiles/strRowD}"))
+    (p (text "~{tiles/strRowE}"))))
