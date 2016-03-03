@@ -5,7 +5,8 @@
                   [hoplon/hoplon             "6.0.0-alpha13"]
                   [org.clojure/clojure       "1.7.0"]
                   [org.clojure/clojurescript "1.7.228"]
-                  [tailrecursion/boot-jetty  "0.1.3"]]
+                  [tailrecursion/boot-jetty  "0.1.3"]
+                  [hoplon/castra             "3.0.0-alpha3"]]
   :source-paths #{"src"}
   :asset-paths  #{"assets"})
 
