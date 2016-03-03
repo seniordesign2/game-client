@@ -1,16 +1,18 @@
 (page "index.html"
-      (:require [ascii-never-dies.core :as client]))
+      (:require [ascii-never-dies.core :as client]
+                [ascii-never-dies.tiles :as tiles]))
 
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc= test-err-message (some-> client/test-err .-message))
 
 (client/rpc-test)
-;;(client/get-record 1)
 
 (html
- (head)
+ (head
+  (link :href "app.css" :rel "stylesheet"))
  (body
+  ;; Error messages and get-record output
   (p :toggle loading?
      (text "Processing ~{loading?} requests..."))
   (p :toggle error-message
@@ -19,14 +21,24 @@
      (text "Test error: ~{test-err-message}"))
   (p (text "Record: ~{client/record}"))
 
+  ;; Button to get a record from server db
   (let [id (cell nil)]
     (form :submit #(client/get-record @id)
           (p (label "Record ID: ")
              (input :value id :keyup #(reset! id @%)))
-          (p (button :type "submit" "submit"))))))
-
-;(html
-;  (head
-;    (link :href "app.css" :rel "stylesheet"))
-;  (body
-;    (h1 "Hello, Hoplon!")))
+          (p (button :type "submit" "submit"))))
+ 
+  ;; periods (.) will represent empty space
+  ;; hashtag (#) will represent walls 
+  ;; at sign (@) will represent the player
+  ;; letters (A) will represent various enemies
+  ;; These lines test grabbing strings from the vector lists of tiles
+  (p "TEST STRINGS FROM tiles.cljs:")
+  (p (text "~{tiles/strRowA}"))
+  (p (text "~{tiles/strRowB}"))
+  (p (text "~{tiles/strRowC}"))
+  (p (text "~{tiles/strRowD}"))
+  (p (text "~{tiles/strRowE}"))
+  (br)(br)(br)
+  (p "TESTING initBoard loop in tiles.cljs")
+  (p (text "~{tiles/strTest}"))))

@@ -1,28 +1,7 @@
-(page "index.html"
-      (:require [ascii-never-dies.core :as client]))
-
-(defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
-(defc= error-message (some-> client/error .-message)) ; contains last command's error message
-
-(c/get-record 1)
+(page "index.html")
 
 (html
- (head)
- (body
-  (p :toggle loading?
-     (text "Processing ~{loading?} requests..."))
-  (p :toggle error-message
-     (text "Error: ~{error-message}"))
-  (p (text "Record: ~{client/record}"))
-
-  (let [id (cell nil)]
-    (form :submit #(c/get-record @id)
-          (p (label "Record ID: ")
-             (input :value id :keyup #(reset! id @%)))
-          (p (button :type "submit" "submit"))))))
-
-;(html
-;  (head
-;    (link :href "app.css" :rel "stylesheet"))
-;  (body
-;    (h1 "Hello, Hoplon!")))
+  (head
+    (link :href "app.css" :rel "stylesheet"))
+  (body
+    (h1 "Hello, Hoplon!")))
