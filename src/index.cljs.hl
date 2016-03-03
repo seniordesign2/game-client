@@ -21,12 +21,19 @@
      (text "Test error: ~{test-err-message}"))
   (p (text "Record: ~{client/record}"))
 
-  ;; Button to get a record from server db
+  ;; Form to get a record from server db
   (let [id (cell nil)]
     (form :submit #(client/get-record @id)
           (p (label "Record ID: ")
-             (input :value id :keyup #(reset! id @%)))
-          (p (button :type "submit" "submit"))))
+             (input :value id :keyup #(reset! id @%))
+             (button :type "submit" "submit"))))
+
+  ;; Form to add a record to the server db
+  (let [content (cell nil)]
+    (form :submit #(client/update-record @content)
+          (p (label "Add record: ")
+             (input :value content :keyup #(reset! content @%))
+             (button :type "submit" "submit"))))
  
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 
