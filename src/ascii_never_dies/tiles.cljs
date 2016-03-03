@@ -1,8 +1,12 @@
 (ns ascii-never-dies.tiles
   (:require [clojure.string]))
 
+(enable-console-print!)
+
 ;; empty hash-map for game board
-(def board {})
+(def board (atom []))
+(def height 100)
+(def width 100)
 
 ;; vectors to be updated with game info
 (def vRowA (vector "#" "#" "#" "#" "#" "#" "#" "#" "#" "#" "#"))
@@ -18,17 +22,12 @@
 (def strRowD (clojure.string/join vRowD))
 (def strRowE (clojure.string/join vRowE))
 
-;; TODO: initialize game board with empty spaces (periods)
-;;       find way to pass as a string for index.cljs.hl
-
-(defn initBoard [v] 
-  (loop [i 0]
-    (when (< i 10)
-    (loop [j 0 vec v]
-      (when (< j 10)
-      (recur (inc j) (conj vec "."))))
-    (recur (inc i))))
-    v
+;; initializes game board with empty spaces (periods)
+(defn initBoard [] 
+  (dotimes [n (* width height)]
+    (swap! board conj ".")
+   )
 )
 
-(def strTest (clojure.string/join (initBoard [])))
+;; TODO: create a function to split string into new lines based on board width and height
+(def strTest (do (initBoard) (clojure.string/join (deref board))))
