@@ -5,6 +5,7 @@
 
 ;; empty hash-map for game board
 (def board (atom []))
+(def boardStr (atom ""))
 (def height 100)
 (def width 100)
 
@@ -29,5 +30,17 @@
    )
 )
 
-;; TODO: create a function to split string into new lines based on board width and height
+;; TODO: printBoard should create a gameboard string seperated by newlines based on width and height
+;(def printBoard
+;  (do
+;    (reset! boardStr "") ;;erase old board to avoid appending new string to old game board
+;    (dotimes [n height]
+;      (let [row (* n width)]
+;        (swap! boardStr conj (clojure.string/join (subvec (deref board) row (+ row width)))))
+;      )
+;    (deref boardStr)
+;  )
+;)
+
+;; passes a string made from the initBoard func
 (def strTest (do (initBoard) (clojure.string/join (deref board))))
