@@ -6,8 +6,6 @@
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc= test-err-message (some-> client/test-err .-message))
 
-(client/rpc-test)
-
 (html
  (head
   (link :href "app.css" :rel "stylesheet"))
@@ -39,13 +37,6 @@
   ;; hashtag (#) will represent walls 
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
-  ;; These lines test grabbing strings from the vector lists of tiles
-  (p "TEST STRINGS FROM tiles.cljs:")
-  (p (text "~{tiles/strRowA}"))
-  (p (text "~{tiles/strRowB}"))
-  (p (text "~{tiles/strRowC}"))
-  (p (text "~{tiles/strRowD}"))
-  (p (text "~{tiles/strRowE}"))
   (br)(br)(br)
   (p "TESTING initBoard loop in tiles.cljs")
-  (p (text "~{tiles/strTest}"))))
+  (p (text "~{tiles/printBoard}"))))
