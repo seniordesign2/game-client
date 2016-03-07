@@ -8,23 +8,23 @@
 (def width 20)
 
 ;; initializes game board with empty spaces (periods)
-(defn initBoard [] 
+(defn init-board [] 
   (dotimes [n (* width height)]
     (swap! board conj ".")))
 
 ;; TODO: printBoard should create a gameboard string seperated by newlines based on width and height
-(def printBoard
+(def print-board
   (do
-    (initBoard)
+    (init-board)
     (loop [n 0
-           bStr ""]
+           b-str ""]
       (if (>= n height)
-        bStr
+        b-str
         (let [row (* n width)]
           (recur (inc n)
-                 (str bStr (apply str (subvec (deref board) row (+ row width))) "\n")))))))
+                 (str b-str (apply str (subvec (deref board) row (+ row width))) "\n")))))))
 
 ;; passes a string made from the initBoard func
-(def strTest (do
-                (initBoard)
+(def str-test (do
+                (init-board)
                 (apply str (deref board))))
