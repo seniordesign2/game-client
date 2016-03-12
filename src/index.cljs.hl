@@ -1,10 +1,13 @@
 (page "index.html"
       (:require [ascii-never-dies.core :as client]
-                [ascii-never-dies.tiles :as tiles]))
+                [ascii-never-dies.tiles :as tiles]
+                [ascii-never-dies.input :as input]))
 
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc= test-err-message (some-> client/test-err .-message))
+
+(input/init)
 
 (html
  (head
