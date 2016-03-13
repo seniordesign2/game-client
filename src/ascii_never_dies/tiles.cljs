@@ -32,6 +32,4 @@
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))
-;(defn test-print [] (:cells scr))
-;(defn test-print [] (apply vector (:cells (s/clear-screen scr "#"))))
-(defn test-print [] (s/stringify (s/clear-screen scr "#")))
+(defn test-print [] (s/stringify (s/insert 10 1 "t" (s/clear-screen "#" scr))))
