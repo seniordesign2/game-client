@@ -33,4 +33,12 @@
                 (init-board)
                 (apply str (deref board))))
 
+;; convert values from 1D board vec to 2D coord representation and vice versa
+;; TODO: to be used later for movement methods and game logic and general map building
+(defn 2D-to-1D [x y]
+  (+ x (* y width)))
 
+(defn 1D-to-2D [pos]
+  (let [x (mod pos width )
+        y (/ pos width)]
+    [x y]))
