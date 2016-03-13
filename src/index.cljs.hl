@@ -1,12 +1,14 @@
 (page "index.html"
       (:require [ascii-never-dies.core :as client]
                 [ascii-never-dies.tiles :as tiles]
+                [ascii-never-dies.player :as player]
                 [ascii-never-dies.input :as input]))
 
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc= test-err-message (some-> client/test-err .-message))
 
+(player/init-player-pos tiles/height tiles/width)
 (input/init)
 
 (html
@@ -35,11 +37,11 @@
           (p (label "Add record: ")
              (input :value content :keyup #(reset! content @%))
              (button :type "submit" "submit"))))
- 
+  
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
   (br)(br)(br)
   (p "TESTING initBoard loop in tiles.cljs")
-  (p (text "~{tiles/print-board}"))))
+  (p (text "~{(tiles/print-board)}"))))

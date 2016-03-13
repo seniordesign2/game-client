@@ -1,5 +1,5 @@
 (ns ascii-never-dies.input
-  (:require [ascii-never-dies.core :as core]
+  (:require [ascii-never-dies.game :as game]
             [goog.dom :as dom]
             [goog.events :as events]
             [cljs.core.async :as async :refer [chan put! pipe unique merge map< filter< alts!]]))
@@ -72,7 +72,7 @@
   []
   (println "Start init")
   (let [commands (chan)
-        notifos (core/init commands)]
+        notifos (game/init commands)]
     (init-events! commands)
     (put! commands [:init])
     ))
