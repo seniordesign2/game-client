@@ -1,11 +1,12 @@
-(ns ascii-never-dies.tiles)
+(ns ascii-never-dies.tiles
+  (:require [ascii-never-dies.screen :as s]))
 
 (enable-console-print!)
 
 ;; empty hash-map for game board
 (def board (atom []))
-(def height 10)
-(def width 20)
+(def height 5)
+(def width 15)
 
 ;; initializes game board with empty spaces (periods)
 (defn init-board [] 
@@ -28,3 +29,9 @@
 (def str-test (do
                 (init-board)
                 (apply str (deref board))))
+
+; testing .screen namespace
+(def scr (s/new-screen width height))
+;(defn test-print [] (:cells scr))
+;(defn test-print [] (apply vector (:cells (s/clear-screen scr "#"))))
+(defn test-print [] (s/stringify (s/clear-screen scr "#")))
