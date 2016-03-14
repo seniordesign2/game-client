@@ -37,10 +37,10 @@
 ;; TODO: to be used later for movement methods and game logic and general map building
 ;; TODO: change function names
 
-;;(defn 2D-to-1D [x y]
- ;; (+ x (* y width)))
+(defn two-to-one-d [x y]
+  (+ x (* y width)))
 
-;;(defn 1D-to-2D [pos]
- ;; (let [x (mod pos width )
-  ;;      y (/ pos width)]
-   ;; [x y]))
+(defn one-to-two-d [pos]
+  (let [x (mod pos width )
+        y (/ pos width)]
+    [x y]))
