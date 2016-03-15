@@ -63,7 +63,7 @@
   "Initialize event processing. It takes all the key presses and transforms them into command and passes them to the game commands channel"
   [game-commands]
   (let [keys-pressed (keys-down-chan)
-        commands (unique (merge [(map< key-down->command keys-pressed)]))]
+        commands (merge [(map< key-down->command keys-pressed)])]
     (pipe commands game-commands)))
 
 (defn init

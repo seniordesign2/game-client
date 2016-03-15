@@ -17,11 +17,11 @@
        (alts! [(timeout speed) shortcircuit])
        (put! cmds [:tick]))))
 
-  (defn update-world
-    "Applies the game constraints (eating, dying, ...) to the world and returns the new version."
-    [{:keys [status] :as world}]
-                                        ;(println "world update")
-    )
+(defn update-world
+  "Applies the game constraints (eating, dying, ...) to the world and returns the new version."
+  [{:keys [status] :as world}]
+  (println "world update")
+  )
 
 
 (defn game!
@@ -29,7 +29,9 @@
   [initial-world cmds]
   (go-loop [{:keys [status] :as world} initial-world]
     (let [[cmd v] (<! cmds)]
-                                        ;(println "Received: " cmd)
+
+      (if (not (case cmd :tick))
+        (println "Received: " cmd ", " v))
       (if (and (= status :game-over) (not= cmd :reset))
         (recur world)
         (case cmd
