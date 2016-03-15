@@ -22,16 +22,16 @@
   (p (text "Record: ~{client/record}"))
 
   ;; Form to get a record from server db
-  (let [id (cell nil)]
-    (form :submit #(client/get-record @id)
-          (p (label "Record ID: ")
-             (input :value id :keyup #(reset! id @%))
+  (let [username (cell nil)]
+    (form :submit #(client/get-record @username)
+          (p (label "Username search: ")
+             (input :value username :keyup #(reset! username @%))
              (button :type "submit" "submit"))))
 
   ;; Form to add a record to the server db
   (let [content (cell nil)]
     (form :submit #(client/update-record @content)
-          (p (label "Add record: ")
+          (p (label "Add username: ")
              (input :value content :keyup #(reset! content @%))
              (button :type "submit" "submit"))))
   
