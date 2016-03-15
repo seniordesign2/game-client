@@ -1,0 +1,8 @@
+(ns ascii-never-dies.screen)
+
+(defrecord Screen [width height cells])
+(defrecord Cell [glyph color])
+
+(defn new-screen []
+  (new Screen
+       
