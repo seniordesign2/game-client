@@ -32,4 +32,4 @@
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))
-(defn test-print [] (s/stringify (s/insert 10 1 "t" (s/clear-screen "#" scr))))
+(defn test-print [] (s/stringify (s/insert-string 5 3 "testing" (s/clear-screen "#" scr))))

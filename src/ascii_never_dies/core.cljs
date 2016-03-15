@@ -5,14 +5,9 @@
 
 (jav/defc record nil)
 (jav/defc error nil)
-(jav/defc test-err nil)
 (jav/defc loading nil)
 
 (def url "https://ascii-never-dies.herokuapp.com/")
-(def rpc-test
-  (cas/mkremote 'ascii-never-dies.handler/rpc-test
-                record test-err loading
-                {:url url}))
 (def get-record
   (cas/mkremote 'ascii-never-dies.handler/get-record
                 record error loading

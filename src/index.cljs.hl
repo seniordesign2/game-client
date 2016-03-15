@@ -4,7 +4,6 @@
 
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
-(defc= test-err-message (some-> client/test-err .-message))
 
 (html
  (head
@@ -15,8 +14,6 @@
      (text "Processing ~{loading?} requests..."))
   (p :toggle error-message
      (text "Error: ~{error-message}"))
-  (p :toggle test-err-message
-     (text "Test error: ~{test-err-message}"))
   (p (text "Record: ~{client/record}"))
 
   ;; Form to get a record from server db
