@@ -8,15 +8,15 @@
    [dommy.core :as dommy :refer-macros [sel sel1]]))
 
 
-  (def initial-world {:status nil})
+(def initial-world {:status nil})
 
-  (defn plan-tick!
-    "Tick the game after the elapsed speed time"
-    ([speed cmds] (plan-tick! speed cmds (chan)))
-    ([speed cmds shortcircuit]
-     (go
-       (alts! [(timeout speed) shortcircuit])
-       (put! cmds [:tick]))))
+(defn plan-tick!
+  "Tick the game after the elapsed speed time"
+  ([speed cmds] (plan-tick! speed cmds (chan)))
+  ([speed cmds shortcircuit]
+   (go
+     (alts! [(timeout speed) shortcircuit])
+     (put! cmds [:tick]))))
 
 (defn update-world
   "Applies the game constraints (eating, dying, ...) to the world and returns the new version."
@@ -28,9 +28,16 @@
   [key]
   (case key
     :left (player/move-player-left)
+    :h (player/move-player-left)
+    
     :right (player/move-player-right)
+    :l (player/move-player-right)
+    
     :up (player/move-player-up tiles/width)
-    :down (player/move-player-down tiles/width)))
+    :k (player/move-player-up tiles/width)
+
+    :down (player/move-player-down tiles/width)
+    :j (player/move-player-down tiles/width)))
 
 
 (defn game!
