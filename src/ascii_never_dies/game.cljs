@@ -20,8 +20,16 @@
 (defn update-world
   "Applies the game constraints (eating, dying, ...) to the world and returns the new version."
   [{:keys [status] :as world}]
-  (println "world update")
   )
+
+(defn handle-move
+  "Moves the character based on the given key press"
+  [key]
+  (case key
+    :left (player/move-player-left)
+    :right (player/move-player-right)
+    :up (player/move-player-up tiles/width)
+    :down (player/move-player-down tiles/width)))
 
 
 (defn game!
@@ -29,9 +37,6 @@
   [initial-world cmds]
   (go-loop [{:keys [status] :as world} initial-world]
     (let [[cmd v] (<! cmds)]
-
-      (if (not (case cmd :tick))
-        (println "Received: " cmd ", " v))
       (if (and (= status :game-over) (not= cmd :reset))
         (recur world)
         (case cmd
@@ -49,7 +54,7 @@
                                         ; (>! notify [:world new-world])
                       (recur new-world))))
 
-          :turn (do (println "Key pressed: " v) (player/move-player-left) (tiles/print-board) (recur world))
+          :turn (do (println "Key pressed: " v) (handle-move v) (recur world))
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 
