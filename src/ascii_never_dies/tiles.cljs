@@ -7,7 +7,7 @@
 ;; empty hash-map for game board
 (def height 5)
 (def width 15)
-(def board (atom (s/new-screen width height)))
+(def board (s/new-screen width height))
 
 ;; convert values from 1D board vec to 2D coord representation and vice versa
 ;; TODO: to be used later for movement methods and game logic and general map building
@@ -28,14 +28,8 @@
 
 ;; creates a gameboard string seperated by newlines based on width and height
 (defn print-board []
-  (let [x 10
-        y 3]
-    (s/stringify (s/insert x y "@" (deref board)))))
-
-;; passes a string made from the initBoard func
-(def str-test (do
-                (init-board)
-                (apply str (deref board))))
+  (let [[x y] (one-to-two-d (deref player/pos))]
+    (s/stringify (s/insert x y "@" board))))
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))
