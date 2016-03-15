@@ -1,6 +1,6 @@
 (ns ascii-never-dies.tiles
-  (:require [ascii-never-dies.screen :as s])
-  (:require [ascii-never-dies.player :as player]))
+  (:require [ascii-never-dies.screen :as s]
+            [ascii-never-dies.player :as player]))
 
 (enable-console-print!)
 
