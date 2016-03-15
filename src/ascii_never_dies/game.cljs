@@ -4,7 +4,8 @@
   (:require
    [ascii-never-dies.player :as player]
    [ascii-never-dies.tiles :as tiles]
-   [cljs.core.async :refer [chan put! <! >! timeout]]))
+   [cljs.core.async :refer [chan put! <! >! timeout]]
+   [dommy.core :as dommy :refer-macros [sel sel1]]))
 
 
   (def initial-world {:status nil})
@@ -50,6 +51,8 @@
                       (recur new-world))
                     (do
                       (plan-tick! 1 cmds)
+                      (-> (sel1 :#board)
+                          (dommy/set-text! (tiles/print-board)))
                                         ; (>! notify [status])
                                         ; (>! notify [:world new-world])
                       (recur new-world))))

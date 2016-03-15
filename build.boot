@@ -7,6 +7,7 @@
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/core.async    "0.2.374"]
                  [tailrecursion/boot-jetty  "0.1.3"]
+                 [prismatic/dommy           "1.1.0"]
                  [hoplon/castra             "3.0.0-alpha3"]]
  :source-paths #{"src"}
  :asset-paths  #{"assets"})

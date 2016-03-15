@@ -5,8 +5,8 @@
 (enable-console-print!)
 
 ;; empty hash-map for game board
-(def height 5)
-(def width 15)
+(def height 15)
+(def width 25)
 (def board (s/new-screen width height))
 
 ;; convert values from 1D board vec to 2D coord representation and vice versa
