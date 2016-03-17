@@ -41,6 +41,4 @@
   ;; letters (A) will represent various enemies
   (br)(br)(br)
   (p "TESTING initBoard loop in tiles.cljs")
-  (p (text "~{(tiles/print-board)}"))
-  (br)(br)(br)
-  (p (text "~{(tiles/test-print)}"))))
+  (p :id "board" (text "~{(tiles/print-board)}"))))

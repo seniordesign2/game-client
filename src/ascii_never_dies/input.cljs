@@ -17,7 +17,11 @@
    39 :right
    40 :down
    32 :space
-   13 :enter})
+   13 :enter
+   72 :h
+   74 :j
+   75 :k
+   76 :l})
 
 (defn event->key
   "Transform an js event object into the key name"
@@ -43,7 +47,7 @@
   (let [evs (event-chan event-type event->key)]
     (filter< allowed-keys evs)))
 
-(def move-keys "Keys that trigger movement" #{:left :up :right :down :space :enter})
+(def move-keys "Keys that trigger movement" #{:left :up :right :down :h :j :k :l})
 
 (def valid-keys-down
   "Keys we want to listen on key down"
