@@ -12,10 +12,18 @@
 (input/init)
 
 ;; Game state cells
+(defc save-load-mode nil)
 (defc player-pos @player/pos)
 (defc= get-player-pos (tiles/one-to-two-d player-pos))
 
+;; Helper functions
 (defn reset-player-pos! [] (reset! player-pos @player/pos))
+(defn save-load-action [mode username]
+  (if (= mode :save)
+    (apply client/save-coords username @get-player-pos))
+  (if (= mode :load)
+    (let [{x :x y :y} (client/load-coords username)]
+      (player/set-player-pos (tiles/two-to-one-d x y)))))
 
 (html
  (head
@@ -49,7 +57,14 @@
     (form :submit #(apply client/save-coords @username @get-player-pos)
           (p (label "Username: ")
              (input :value username :change #(reset! username @%)) (br)
-             (button :type "submit" :click reset-player-pos! "Save XY"))))
+             (button :type "submit"
+                     :click (do
+                              reset-player-pos!
+                              #(reset! save-load-mode :save))
+                     "Save XY")
+             (button :type "submit"
+                     :click #(reset! save-load-mode :load)
+                     "Load XY"))))
   
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 

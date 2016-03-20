@@ -27,6 +27,10 @@
   (cas/mkremote 'ascii-never-dies.handler/save-coords
                 record error loading
                 {:url url}))
+(def load-coords
+  (cas/mkremote 'ascii-never-dies.handler/load-coords
+                xy error loading
+                {:url url}))
 
 ;; print to the console
 (println "Hello, World!")
