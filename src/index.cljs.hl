@@ -4,11 +4,18 @@
                 [ascii-never-dies.player :as player]
                 [ascii-never-dies.input :as input]))
 
+;; RPC message cells
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 
 (player/init-player-pos tiles/height tiles/width)
 (input/init)
+
+;; Game state cells
+(defc player-pos @player/pos)
+(defc= get-player-pos (tiles/one-to-two-d player-pos))
+
+(defn reset-player-pos! [] (reset! player-pos @player/pos))
 
 (html
  (head
@@ -25,25 +32,24 @@
   (let [username (cell nil)]
     (form :submit #(client/get-record @username)
           (p (label "Username search: ")
-             (input :value username :keyup #(reset! username @%))
+             (input :value username :change #(reset! username @%))
              (button :type "submit" "submit"))))
 
   ;; Form to add a record to the server db
   (let [content (cell nil)]
     (form :submit #(client/update-record @content)
           (p (label "Add username: ")
-             (input :value content :keyup #(reset! content @%))
+             (input :value content :change #(reset! content @%))
              (button :type "submit" "submit"))))
 
   (br)(br)(br)
 
   ;; Buttons to save and load xy coords
-  (let [username (cell nil)
-        [x y] (tiles/one-to-two-d @player/pos)]
-    (form :submit #(client/save-coords @username x y)
+  (let [username (cell nil)]
+    (form :submit #(apply client/save-coords @username @get-player-pos)
           (p (label "Username: ")
-             (input :value username :keyup #(reset! username @%)) (br)
-             (button :type "submit" :value "save" "Save XY"))))
+             (input :value username :change #(reset! username @%)) (br)
+             (button :type "submit" :click reset-player-pos! "Save XY"))))
   
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 
