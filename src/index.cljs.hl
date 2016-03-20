@@ -4,38 +4,53 @@
                 [ascii-never-dies.player :as player]
                 [ascii-never-dies.input :as input]))
 
+(enable-console-print!)
+
 ;; RPC message cells
 (defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
+(defc save-load-mode nil)
 
 (player/init-player-pos tiles/height tiles/width)
 (input/init)
 
 ;; Game state cells
-(defc save-load-mode nil)
 (defc player-pos @player/pos)
 (defc= get-player-pos (tiles/one-to-two-d player-pos))
 
 ;; Helper functions
 (defn reset-player-pos! [] (reset! player-pos @player/pos))
+
+(defn sleep [ms]
+  (let [deadline (+ ms (.getTime (js/Date.)))]
+    (while (> deadline (.getTime (js/Date.))))))
+
 (defn save-load-action [mode username]
   (if (= mode :save)
-    (apply client/save-coords username @get-player-pos))
+    (do
+      (println @get-player-pos)
+      (println @client/xy)
+      (apply client/save-coords username @get-player-pos)))
   (if (= mode :load)
-    (let [{x :x y :y} (client/load-coords username)]
-      (player/set-player-pos (tiles/two-to-one-d x y)))))
+    (do
+      (client/load-coords username)
+      (let [end-time (+ (.getTime (js/Date.)) 1000)]
+        (loop []
+          (if (not= nil @client/xy)
+            true
+            (do
+              (println "Loading")
+              (sleep 200)
+              (if (< (.getTime (js/Date.)) end-time)
+                (recur))))))
+      (let [{x :x y :y} @client/xy]
+        (player/set-player-pos (tiles/two-to-one-d x y))
+        (println @client/xy)))))
 
 (html
  (head
   (link :href "app.css" :rel "stylesheet"))
  (body
-  ;; Error messages and get-record output
-  (p :toggle loading?
-     (text "Processing ~{loading?} requests..."))
-  (p :toggle error-message
-     (text "Error: ~{error-message}"))
-  (p (text "Record: ~{client/record}"))
-
   ;; Form to get a record from server db
   (let [username (cell nil)]
     (form :submit #(client/get-record @username)
@@ -50,26 +65,35 @@
              (input :value content :change #(reset! content @%))
              (button :type "submit" "submit"))))
 
-  (br)(br)(br)
+  (br)
 
   ;; Buttons to save and load xy coords
   (let [username (cell nil)]
-    (form :submit #(apply client/save-coords @username @get-player-pos)
+    (form :submit #(save-load-action @save-load-mode @username)
           (p (label "Username: ")
              (input :value username :change #(reset! username @%)) (br)
-             (button :type "submit"
-                     :click (do
-                              reset-player-pos!
-                              #(reset! save-load-mode :save))
+             (button :click #(do
+                               (reset-player-pos!)
+                               (reset! save-load-mode :save))
+                     :type "submit"
                      "Save XY")
-             (button :type "submit"
-                     :click #(reset! save-load-mode :load)
+             (button :click #(reset! save-load-mode :load)
+                     :type "submit"
                      "Load XY"))))
   
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
-  (br)(br)(br)
+  (br)
   (p "TESTING initBoard loop in tiles.cljs")
-  (p :id "board" (text "~{(tiles/print-board)}"))))
+  (p :id "board" (text "~{(tiles/print-board)}"))
+
+  (br)
+  
+  ;; Error messages and get-record output
+  (p :toggle loading?
+     (text "Processing ~{loading?} requests..."))
+  (p :toggle error-message
+     (text "Error: ~{error-message}"))
+  (p (text "Record: ~{client/record}"))))

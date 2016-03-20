@@ -12,7 +12,7 @@
 (jav/defc record nil)
 (jav/defc error nil)
 (jav/defc loading nil)
-(jav/defc xy {:x nil :y nil})
+(jav/defc xy nil)
 
 (def url "https://ascii-never-dies.herokuapp.com/")
 (def get-record
