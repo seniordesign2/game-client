@@ -34,6 +34,16 @@
           (p (label "Add username: ")
              (input :value content :keyup #(reset! content @%))
              (button :type "submit" "submit"))))
+
+  (br)(br)(br)
+
+  ;; Buttons to save and load xy coords
+  (let [username (cell nil)
+        [x y] (tiles/one-to-two-d @player/pos)]
+    (form :submit #(client/save-coords @username x y)
+          (p (label "Username: ")
+             (input :value username :keyup #(reset! username @%)) (br)
+             (button :type "submit" :value "save" "Save XY"))))
   
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 

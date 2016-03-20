@@ -7,8 +7,12 @@
 
 ;; initializes player position to center board
 (defn init-player-pos [height width]
-  (swap! pos + (* width (int(/ height 2))) (int(/ width 2)))
+  (reset! pos (+ (* width (int(/ height 2))) (int(/ width 2))))
   (println "start: " pos))
+
+;; Sets the players position
+(defn set-player-pos [n]
+  (reset! pos n))
 
 ;; player movement methods
 ;; width and height refer to game board, as board is a 1D vector
