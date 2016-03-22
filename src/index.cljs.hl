@@ -19,33 +19,21 @@
 (defc= get-player-pos (tiles/one-to-two-d player-pos))
 
 ;; Helper functions
-(defn reset-player-pos! [] (reset! player-pos @player/pos))
+(defn reset-player-pos! []
+  (reset! player-pos @player/pos))
 
-(defn sleep [ms]
-  (let [deadline (+ ms (.getTime (js/Date.)))]
-    (while (> deadline (.getTime (js/Date.))))))
+(add-watch client/xy nil
+           (fn [key ref old new]
+             (player/set-player-pos (apply tiles/two-to-one-d (client/get-xy)))
+             (reset-player-pos!)))
 
 (defn save-load-action [mode username]
   (if (= mode :save)
     (do
-      (println @get-player-pos)
-      (println @client/xy)
+      (reset-player-pos!)
       (apply client/save-coords username @get-player-pos)))
   (if (= mode :load)
-    (do
-      (client/load-coords username)
-      (let [end-time (+ (.getTime (js/Date.)) 1000)]
-        (loop []
-          (if (not= nil @client/xy)
-            true
-            (do
-              (println "Loading")
-              (sleep 200)
-              (if (< (.getTime (js/Date.)) end-time)
-                (recur))))))
-      (let [{x :x y :y} @client/xy]
-        (player/set-player-pos (tiles/two-to-one-d x y))
-        (println @client/xy)))))
+    (client/load-coords username)))
 
 (html
  (head
@@ -72,9 +60,7 @@
     (form :submit #(save-load-action @save-load-mode @username)
           (p (label "Username: ")
              (input :value username :change #(reset! username @%)) (br)
-             (button :click #(do
-                               (reset-player-pos!)
-                               (reset! save-load-mode :save))
+             (button :click #(reset! save-load-mode :save)
                      :type "submit"
                      "Save XY")
              (button :click #(reset! save-load-mode :load)
@@ -86,9 +72,7 @@
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
   (br)
-  (p "TESTING initBoard loop in tiles.cljs")
   (p :id "board" (text "~{(tiles/print-board)}"))
-
   (br)
   
   ;; Error messages and get-record output
@@ -96,4 +80,6 @@
      (text "Processing ~{loading?} requests..."))
   (p :toggle error-message
      (text "Error: ~{error-message}"))
+  (p (text "Stored xy: ~{client/xy}"))
+  (p (text "Player pos: ~{get-player-pos}"))
   (p (text "Record: ~{client/record}"))))
