@@ -22,10 +22,12 @@
 (defn reset-player-pos! []
   (reset! player-pos @player/pos))
 
-(add-watch client/xy nil
-           (fn [key ref old new]
-             (player/set-player-pos (apply tiles/two-to-one-d (client/get-xy)))
-             (reset-player-pos!)))
+(defn xy-watcher [key ref old new]
+  "Watcher function to update player position when the xy cell changes, AKA when the game is loaded."
+  (player/set-player-pos (apply tiles/two-to-one-d (client/get-xy)))
+  (swap! client/xy assoc :new false)
+  (reset-player-pos!))
+(add-watch client/xy nil xy-watcher)
 
 (defn save-load-action [mode username]
   (if (= mode :save)
@@ -34,6 +36,10 @@
       (apply client/save-coords username @get-player-pos)))
   (if (= mode :load)
     (client/load-coords username)))
+
+;;;;;;;;;;;;;;;;;;;;
+; HTML
+;;;;;;;;;;;;;;;;;;;;
 
 (html
  (head

@@ -13,7 +13,6 @@
 (jav/defc error nil)
 (jav/defc loading nil)
 (jav/defc xy nil)
-(jav/defc xy-loading nil)
 
 (defn get-xy []
   "Returns the contents of the xy cell as a vector."
