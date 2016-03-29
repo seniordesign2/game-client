@@ -24,12 +24,15 @@
    76 :l})
 
 (defn event->key
-  "Transform an js event object into the key name"
-  [ev] (get keycodes (.-keyCode ev) :key-not-found))
+  "Transform a js event object into the key name."
+  [ev]
+  (get keycodes (.-keyCode ev) :key-not-found))
 
 (defn event-chan
-  "Creates a channel with the events of type event-type and optionally applies the function parse-event to each event."
-  ([event-type] (event-chan event-type identity false))
+  "Creates a channel with the events of type event-type
+  and optionally applies the function parse-event to each event."
+  ([event-type]
+   (event-chan event-type identity false))
   ([event-type parse-event]
    (event-chan event-type parse-event false))
   ([event-type parse-event prevent-default]
@@ -42,41 +45,44 @@
      ev-chan)))
 
 (defn keys-chan
-  "Returns a channel with the key events of event-type parsed and filtered by the allowed keys."
+  "Returns a channel with the key events
+  of event-type parsed and filtered by the allowed keys."
   [event-type allowed-keys]
   (let [evs (event-chan event-type event->key)]
     (filter< allowed-keys evs)))
 
-(def move-keys "Keys that trigger movement" #{:left :up :right :down :h :j :k :l})
+(def move-keys
+  "Keys that trigger movement."
+  #{:left :up :right :down :h :j :k :l})
 
 (def valid-keys-down
-  "Keys we want to listen on key down"
+  "Keys we want to listen on key down."
   move-keys)
 
 (defn keys-down-chan
-  "Create a channel of keys pressed down restricted by the valid keys"
-  [] (keys-chan (.-KEYDOWN events/EventType) valid-keys-down))
+  "Create a channel of keys pressed down restricted by the valid keys."
+  []
+  (keys-chan (.-KEYDOWN events/EventType) valid-keys-down))
 
 (defn key-down->command
-  "Transform a key pressed down to the command we will send to the game"
-  [k]
+  "Transform a key pressed down to the command we will send to the game."
+  [key]
   (cond
-    (move-keys k) [:turn k]))
+    (move-keys key) [:move key]))
 
 (defn init-events!
-  "Initialize event processing. It takes all the key presses and transforms them into command and passes them to the game commands channel"
-  [game-commands]
+  "Initialize event processing. It takes all the key presses
+  and transforms them into commands
+  and passes them to the game commands channel."
+  [commands]
   (let [keys-pressed (keys-down-chan)
-        commands (merge [(map< key-down->command keys-pressed)])]
-    (pipe commands game-commands)))
+        key-commands (map< key-down->command keys-pressed)]
+    (pipe key-commands commands)))
 
 (defn init
-  "Initialize the UI by initializing the user input, adapting the canvas
-  and starting the render loop."
-  []
-  (println "Start init")
-  (let [commands (chan)
-        notifos (game/init commands)]
-    (init-events! commands)
-    (put! commands [:init])
-    ))
+  "Initialize the UI by initializing the user input
+  and starting the game loop."
+  [commands]
+  (println "Start input loop")
+  (init-events! commands)
+  (put! commands [:init]))

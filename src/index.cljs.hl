@@ -12,11 +12,11 @@
 (defc save-load-mode nil)
 
 (player/init-player-pos tiles/height tiles/width)
-(input/init)
+(client/init)
 
 ;; Game state cells
 (defc player-pos @player/pos)
-(defc= get-player-pos (tiles/one-to-two-d player-pos))
+(defc= get-player-pos player-pos)
 
 ;; Helper functions
 (defn reset-player-pos! []
@@ -24,7 +24,7 @@
 
 (defn xy-watcher [key ref old new]
   "Watcher function to update player position when the xy cell changes, AKA when the game is loaded."
-  (player/set-player-pos (apply tiles/two-to-one-d (client/get-xy)))
+  (player/set-player-pos client/get-xy)
   (swap! client/xy assoc :new false)
   (reset-player-pos!))
 (add-watch client/xy nil xy-watcher)
@@ -78,6 +78,7 @@
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
   (br)
+  #_(p :id "board" (text "~{(tiles/print-board)}"))
   (p :id "board" (text "~{(tiles/print-board)}"))
   (br)
   

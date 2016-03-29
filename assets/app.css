@@ -11,8 +11,12 @@ p {
     font-family: "Courier New";
     font-size: 200%;
     line-height: 100%;
-    width: 480px;
 }
 #main{
     text-align: center;
+}
+#board {
+    margin: auto;
+    border: 2px solid black;
+    width: 480px;
 }

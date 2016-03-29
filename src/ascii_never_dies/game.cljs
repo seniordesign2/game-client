@@ -5,70 +5,64 @@
    [ascii-never-dies.player :as player]
    [ascii-never-dies.tiles :as tiles]
    [cljs.core.async :refer [chan put! <! >! timeout]]
-   [dommy.core :as dommy :refer-macros [sel sel1]]))
+   [dommy.core :as dommy]))
 
-
-(def initial-world {:status nil})
+(def initial-world {:status nil
+                    :screens [:play]})
 
 (defn plan-tick!
-  "Tick the game after the elapsed speed time"
-  ([speed cmds] (plan-tick! speed cmds (chan)))
-  ([speed cmds shortcircuit]
-   (go
-     (alts! [(timeout speed) shortcircuit])
-     (put! cmds [:tick]))))
+  "Schedule a game tick."
+  [speed commands]
+  (go
+    (<! (timeout speed)) ; TODO: why is this necessary, even when speed is 0?
+    (put! commands [:tick])))
 
 (defn update-world
-  "Applies the game constraints (eating, dying, ...) to the world and returns the new version."
+  "Applies the game constraints to the world and returns the new version."
   [{:keys [status] :as world}]
   )
 
 (defn handle-move
-  "Moves the character based on the given key press"
+  "Moves the character based on the given key press."
   [key]
   (case key
-    :left (player/move-player-left)
-    :h (player/move-player-left)
-    
-    :right (player/move-player-right)
-    :l (player/move-player-right)
-    
-    :up (player/move-player-up tiles/width)
-    :k (player/move-player-up tiles/width)
-
-    :down (player/move-player-down tiles/width)
-    :j (player/move-player-down tiles/width)))
-
+    (:left :h) (player/move-player-left)
+    (:right :l) (player/move-player-right)
+    (:up :k) (player/move-player-up tiles/width)
+    (:down :j) (player/move-player-down tiles/width)))
 
 (defn game!
-  "Game internal loop that processes commands and updates state applying functions"
-  [initial-world cmds]
+  "Game internal loop that processes commands and updates state applying functions."
+  [initial-world commands]
   (go-loop [{:keys [status] :as world} initial-world]
-    (let [[cmd v] (<! cmds)]
+    (let [[cmd value] (<! commands)]
       (if (and (= status :game-over) (not= cmd :reset))
         (recur world)
         (case cmd
-          :init (do (plan-tick! 0 cmds) (recur world))
+          :init (do
+                  (plan-tick! 0 commands)
+                  (recur world))
           
           :tick (let [new-world (update-world world)
-                      status (:status "new world")]
+                      status (:status new-world)]
                   (if (= status :game-over)
+                    (recur new-world)
                     (do
-                                        ; (>! notify [:game-over])
-                      (recur new-world))
-                    (do
-                      (plan-tick! 1 cmds)
-                      (-> (sel1 :#board)
+                      (plan-tick! 0 commands)
+                      (-> (dommy/sel1 :#board)
+                          #_(dommy/set-text! (tiles/print-board))
                           (dommy/set-text! (tiles/print-board)))
-                                        ; (>! notify [status])
-                                        ; (>! notify [:world new-world])
                       (recur new-world))))
 
-          :turn (do (println "Key pressed: " v) (handle-move v) (recur world))
+          :move (do
+                  (println "Key pressed: " value)
+                  (handle-move value)
+                  (recur world))
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 
-(defn init [commands]
-  (let [notifos (chan)]
-    (game! initial-world commands)
-    notifos))
+(defn init
+  "Initialize the game loop."
+  [commands]
+  (println "Start game loop")
+  (game! initial-world commands))

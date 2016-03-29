@@ -2,6 +2,9 @@
   (:require
    [castra.core :as cas]
    [javelin.core :as jav :include-macros true]
+   [cljs.core.async :refer [chan]]
+   [ascii-never-dies.game :as game]
+   [ascii-never-dies.input :as input]
    [ascii-never-dies.tiles :as tiles]
    [ascii-never-dies.player :as player]))
 
@@ -37,5 +40,9 @@
                 xy error loading
                 {:url url}))
 
-;; print to the console
-(println "Hello, World!")
+(defn init
+  "Initialize the game loop and the input loop."
+  []
+  (let [commands (chan)]
+    (game/init commands)
+    (input/init commands)))
