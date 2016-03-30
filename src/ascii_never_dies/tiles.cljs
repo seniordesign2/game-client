@@ -18,3 +18,7 @@
 (def scr (s/new-screen width height))
 (defn test-print []
   (s/stringify (s/insert [10 2] "t" (s/clear-screen "#" scr))))
+
+; testing file reading in screen.cljs
+(defn test-readfile
+  (s/replace-screen))
