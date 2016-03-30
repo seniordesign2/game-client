@@ -1,6 +1,6 @@
 (ns ascii-never-dies.screen
-  (:require [clojure.string :as string]
-            [clojure.java.io :as io]))
+  (:require [clojure.string :as string])
+  (:require-macros [ascii-never-dies.filereader :refer [load-map]]))
 
 (defrecord Screen [width height cells])
 (defrecord Cell [glyph color])
@@ -50,10 +50,5 @@
 ; Maps will be linked together by simply appending the correct int to each filename for each map
 ; Example: map1.txt, map2.txt, map23.txt, map14.txt, so on...
 
-(def map-file "/assets/map1.txt")
-
-; Reads in a map#.txt file and updates the game map
-(defn replace-screen
-  (with-open [rdr (io/reader map-file)]
-    (doseq [line (line-seq rdr)]
-            (println line))))
+(defn replace-map
+  (load-map))
