@@ -6,7 +6,9 @@
 (defrecord Cell [glyph color])
 
 (enable-console-print!)
-(def map-file "/assets/map1.txt")
+
+;; TODO: create method of navigating multiple maps
+(def map-file "assets/maps/map1.txt")
 
 (defn init-cells
   "Generates a nested vector of new Cells."
@@ -52,4 +54,4 @@
 ; Example: map1.txt, map2.txt, map23.txt, map14.txt, so on...
 
 (defn replace-map []
-  (load-map "/home/austin4e/Desktop/SeniorDesign2/game-client/assets/map1.txt"))
+  (load-map "assets/maps/map1.txt"))
