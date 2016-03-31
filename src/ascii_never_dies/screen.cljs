@@ -6,6 +6,7 @@
 (defrecord Cell [glyph color])
 
 (enable-console-print!)
+(def map-file "/assets/map1.txt")
 
 (defn init-cells
   "Generates a nested vector of new Cells."
@@ -50,5 +51,5 @@
 ; Maps will be linked together by simply appending the correct int to each filename for each map
 ; Example: map1.txt, map2.txt, map23.txt, map14.txt, so on...
 
-(defn replace-map
-  (load-map))
+(defn replace-map []
+  (load-map "/home/austin4e/Desktop/SeniorDesign2/game-client/assets/map1.txt"))

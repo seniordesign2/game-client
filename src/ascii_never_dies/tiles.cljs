@@ -20,5 +20,5 @@
   (s/stringify (s/insert [10 2] "t" (s/clear-screen "#" scr))))
 
 ; testing file reading in screen.cljs
-(defn test-readfile
-  (s/replace-screen))
+(defn test-readfile []
+  (println (s/replace-map)))
