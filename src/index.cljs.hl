@@ -24,7 +24,7 @@
 
 (defn xy-watcher [key ref old new]
   "Watcher function to update player position when the xy cell changes, AKA when the game is loaded."
-  (player/set-player-pos client/get-xy)
+  (player/set-player-pos (client/get-xy))
   (swap! client/xy assoc :new false)
   (reset-player-pos!))
 (add-watch client/xy nil xy-watcher)

@@ -12,7 +12,7 @@
 ;; creates a gameboard string seperated by newlines based on width and height
 (defn print-board []
   (let [[x y] @player/pos]
-    (s/stringify (s/insert @player/pos "@" board))))
+    (s/stringify (s/insert [x y] "@" board))))
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))

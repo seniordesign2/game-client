@@ -1,6 +1,8 @@
 (ns ascii-never-dies.screen
   (:require [clojure.string :as string]))
 
+(enable-console-print!)
+
 (defrecord Screen [width height cells])
 (defrecord Cell [glyph color])
 
@@ -33,8 +35,7 @@
 (defn stringify
   "Generates a string for the given Screen."
   [screen]
-  (let [width (:width screen)
-        height (:height screen)]
+  (let [height (:height screen)]
     (loop [row 0
            s ""]
       (if (>= row height)
