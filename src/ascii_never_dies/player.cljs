@@ -4,6 +4,8 @@
 
 ;; player vars
 (def pos (atom []))
+(def cur-health (atom 0))
+(def max-health (atom 100))
 
 ;; Sets the players position
 (defn set-player-pos [[x y]]
