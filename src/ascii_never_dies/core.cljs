@@ -43,6 +43,7 @@
 (defn init
   "Initialize the game loop and the input loop."
   []
+  (reset! player/cur-health 100)
   (let [commands (chan)]
     (game/init commands)
     (input/init commands)))

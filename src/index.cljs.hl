@@ -18,6 +18,11 @@
 (defc player-pos @player/pos)
 (defc= get-player-pos player-pos)
 
+(defc player-cur-health @player/cur-health)
+(defc player-max-health @player/max-health)
+(defc= get-player-cur-health player-cur-health)
+(defc= get-player-max-health player-max-health)
+
 ;; Helper functions
 (defn reset-player-pos! []
   (reset! player-pos @player/pos))
@@ -77,6 +82,7 @@
   ;; hashtag (#) will represent walls 
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
+  (p (text "HP: ~{get-player-cur-health}/~{get-player-max-health}"))
   (br)
   #_(p :id "board" (text "~{(tiles/print-board)}"))
   (p :id "board" (text "~{(tiles/print-board)}"))
