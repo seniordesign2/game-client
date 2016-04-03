@@ -20,7 +20,8 @@
 (defn update-world
   "Applies the game constraints to the world and returns the new version."
   [{:keys [status] :as world}]
-  )
+  (if (<= @player/cur-health 0)
+    (assoc world :status :game-over)))
 
 (defn handle-move
   "Moves the character based on the given key press."
@@ -46,7 +47,7 @@
           :tick (let [new-world (update-world world)
                       status (:status new-world)]
                   (if (= status :game-over)
-                    (recur new-world)
+                    (println "GAME OVER!")
                     (do
                       (plan-tick! 0 commands)
                       (-> (dommy/sel1 :#board)
@@ -60,7 +61,7 @@
                   (recur world))
 
           :damage (do
-                    (swap! player/cur-health dec)
+                    (swap! player/cur-health - value)
                     (do
                       (-> (dommy/sel1 :#health)
                           (dommy/set-text! (str "HP: " (player/print-health))))
