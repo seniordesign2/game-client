@@ -56,13 +56,15 @@
 
           :move (do
                   (println "Key pressed: " value)
-                  (println player/cur-health)
                   (handle-move value)
                   (recur world))
 
           :damage (do
                     (swap! player/cur-health dec)
-                    (recur world))
+                    (do
+                      (-> (dommy/sel1 :#health)
+                          (dommy/set-text! (str "HP: " (player/print-health))))
+                      (recur world)))
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 

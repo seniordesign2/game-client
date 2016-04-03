@@ -82,7 +82,7 @@
   ;; hashtag (#) will represent walls 
   ;; at sign (@) will represent the player
   ;; letters (A) will represent various enemies
-  (p (text "HP: ~{get-player-cur-health}/~{get-player-max-health}"))
+  (p :id "health"(text "HP: ~{(player/print-health)}"))
   (br)
   #_(p :id "board" (text "~{(tiles/print-board)}"))
   (p :id "board" (text "~{(tiles/print-board)}"))
