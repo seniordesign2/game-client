@@ -31,3 +31,6 @@
 
 (defn move-player-down [width]
   (swap! pos update 1 inc))
+
+(defn print-health []
+  (str @cur-health "/" @max-health))

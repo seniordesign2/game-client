@@ -55,6 +55,19 @@
   "Keys that trigger movement."
   #{:left :up :right :down :h :j :k :l})
 
+(def action-keys
+  "Keys that trigger actions."
+  #{:space})
+
+(def valid-keys-up
+  "Keys we want to listen on key down."
+  action-keys)
+
+(defn keys-up-chan
+  "Create a channel of keys pressed down restricted by the valid keys."
+  []
+  (keys-chan (.-KEYUP events/EventType) valid-keys-up))
+
 (def valid-keys-down
   "Keys we want to listen on key down."
   move-keys)
@@ -70,13 +83,21 @@
   (cond
     (move-keys key) [:move key]))
 
+(defn key-up->command
+  "Transform a key up to the command we will send to the game."
+  [key]
+  (cond
+    (action-keys key) [:damage 5]))
+
 (defn init-events!
   "Initialize event processing. It takes all the key presses
   and transforms them into commands
   and passes them to the game commands channel."
   [commands]
   (let [keys-pressed (keys-down-chan)
-        key-commands (map< key-down->command keys-pressed)]
+        keys-up      (keys-up-chan)
+        key-commands (merge [(map< key-down->command keys-pressed)
+                             (map< key-up->command keys-up)])]
     (pipe key-commands commands)))
 
 (defn init
