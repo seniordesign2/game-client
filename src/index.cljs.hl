@@ -14,6 +14,9 @@
 (player/init-player-pos tiles/height tiles/width)
 (client/init)
 
+;; TESTING FILE READING
+#_(tiles/test-readfile)
+
 ;; Game state cells
 (defc player-pos @player/pos)
 (defc= get-player-pos player-pos)

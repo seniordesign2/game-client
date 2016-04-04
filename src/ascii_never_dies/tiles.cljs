@@ -12,9 +12,13 @@
 ;; creates a gameboard string seperated by newlines based on width and height
 (defn print-board []
   (let [[x y] @player/pos]
-    (s/stringify (s/insert [x y] "@" board))))
+    (s/stringify (s/insert @player/pos "@" (s/replace-map board)))))
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))
 (defn test-print []
   (s/stringify (s/insert [10 2] "t" (s/clear-screen "#" scr))))
+
+; testing file reading in screen.cljs
+#_(defn test-readfile []
+  (println (s/replace-map)))

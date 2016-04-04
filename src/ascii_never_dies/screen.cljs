@@ -1,10 +1,16 @@
 (ns ascii-never-dies.screen
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string])
+  (:require-macros [ascii-never-dies.filereader :refer [load-map]]))
 
 (enable-console-print!)
 
 (defrecord Screen [width height cells])
 (defrecord Cell [glyph color])
+
+(enable-console-print!)
+
+;; TODO: create method of navigating multiple maps
+(def map-file "assets/maps/map1.txt")
 
 (defn init-cells
   "Generates a nested vector of new Cells."
@@ -44,3 +50,14 @@
                (str s
                     (apply str (map :glyph (nth (:cells screen) row)))
                     "\n"))))))
+
+; Maps will be linked together by simply appending the correct int to each filename for each map
+; Example: map1.txt, map2.txt, map23.txt, map14.txt, so on...
+(defn replace-map
+  "Replaces the given screen with (currently) map1."
+  [screen]
+  (let [s (string/split (load-map "assets/maps/map1.txt") #"\n" (:height screen))]
+    (assoc screen :cells (vec (for [r (range (:height screen))
+                                    :let [row (nth (:cells screen) r)
+                                          new-row (nth s r)]]
+                                (mapv #(assoc %1 :glyph %2) row new-row))))))
