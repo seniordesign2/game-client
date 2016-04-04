@@ -17,8 +17,9 @@
 (jav/defc loading nil)
 (jav/defc xy nil)
 
-(defn get-xy []
+(defn get-xy
   "Returns the contents of the xy cell as a vector."
+  []
   (let [{x :x y :y} @xy]
     [x y]))
 

@@ -15,7 +15,7 @@
 (client/init)
 
 ;; TESTING FILE READING
-(tiles/test-readfile)
+#_(tiles/test-readfile)
 
 ;; Game state cells
 (defc player-pos @player/pos)

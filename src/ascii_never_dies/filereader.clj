@@ -3,4 +3,4 @@
 
 ; Reads in a map#.txt file and updates the game map
 (defmacro load-map [map-file]
-  (slurp (io/file map-file)))
+  (slurp (io/file 'map-file)))
