@@ -6,9 +6,6 @@
 (defrecord Screen [width height cells])
 (defrecord Cell [glyph color])
 
-;; TODO: create method of navigating multiple maps
-(def map-file "assets/maps/map1.txt")
-
 (defn init-cells
   "Generates a nested vector of new Cells."
   [width height]
