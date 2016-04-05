@@ -1,6 +1,9 @@
 (ns ascii-never-dies.filereader
   (:require [clojure.java.io :as io]))
 
-; Reads in a map#.txt file and updates the game map
-(defmacro load-map [map-file]
-  (slurp (io/file map-file)))
+(defmacro load-maps
+  "Retrieves every map located in PROJECT_ROOT/assets/maps/"
+  []
+  (vec (for [map-file (sort-by #(io/.getName %)
+                               (rest (file-seq (io/file "assets/maps/"))))]
+    (slurp map-file))))

@@ -1,24 +1,27 @@
 (ns ascii-never-dies.tiles
   (:require [ascii-never-dies.screen :as s]
-            [ascii-never-dies.player :as player]))
+            [ascii-never-dies.player :as player])
+  (:require-macros [ascii-never-dies.filereader :refer [load-maps]]))
 
 (enable-console-print!)
 
-;; empty hash-map for game board
 (def width 25)
 (def height 15)
 (def board (s/new-screen width height))
+(def maps (load-maps))
 
-;; creates a gameboard string seperated by newlines based on width and height
-(defn print-board []
+(defn get-map
+  "Returns a map. n is what order it was loaded in alphabetically."
+  [n]
+  (nth maps (dec n)))
+
+(defn print-board
+  "Creates a string out of the current board."
+  []
   (let [[x y] @player/pos]
-    (s/stringify (s/insert @player/pos "@" (s/replace-map board)))))
+    (s/stringify (s/insert @player/pos "@" (s/replace-screen board (get-map 1))))))
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))
 (defn test-print []
   (s/stringify (s/insert [10 2] "t" (s/clear-screen "#" scr))))
-
-; testing file reading in screen.cljs
-#_(defn test-readfile []
-  (println (s/replace-map)))
