@@ -7,8 +7,6 @@
 (defrecord Screen [width height cells])
 (defrecord Cell [glyph color])
 
-(enable-console-print!)
-
 ;; TODO: create method of navigating multiple maps
 (def map-file "assets/maps/map1.txt")
 
@@ -56,7 +54,7 @@
 (defn replace-map
   "Replaces the given screen with (currently) map1."
   [screen]
-  (let [s (string/split (load-map "assets/maps/map1.txt") #"\n" (:height screen))]
+  (let [s (string/split (load-map (str "assets/maps/map" 1 ".txt")) #"\n" (:height screen))]
     (assoc screen :cells (vec (for [r (range (:height screen))
                                     :let [row (nth (:cells screen) r)
                                           new-row (nth s r)]]
