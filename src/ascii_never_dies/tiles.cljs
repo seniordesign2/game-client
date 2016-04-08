@@ -18,8 +18,7 @@
 (defn print-board
   "Creates a string out of the current board."
   []
-  (let [[x y] @player/pos]
-    (s/stringify (s/insert @player/pos "@" (s/replace-screen board (get-map 1))))))
+  (s/stringify (s/insert (player/get-pos) "@" (s/replace-screen board (get-map 1)))))
 
 ; testing .screen namespace
 (def scr (s/new-screen width height))

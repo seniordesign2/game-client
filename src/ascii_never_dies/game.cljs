@@ -20,7 +20,7 @@
 (defn update-world
   "Applies the game constraints to the world and returns the new version."
   [{:keys [status] :as world}]
-  (if (<= @player/cur-health 0)
+  (if (player/is-dead?)
     (assoc world :status :game-over)))
 
 (defn handle-move
@@ -29,8 +29,8 @@
   (case key
     (:left :h) (player/move-player-left)
     (:right :l) (player/move-player-right)
-    (:up :k) (player/move-player-up tiles/width)
-    (:down :j) (player/move-player-down tiles/width)))
+    (:up :k) (player/move-player-up)
+    (:down :j) (player/move-player-down)))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
@@ -61,11 +61,10 @@
                   (recur world))
 
           :damage (do
-                    (swap! player/cur-health - value)
-                    (do
-                      (-> (dommy/sel1 :#health)
-                          (dommy/set-text! (str "HP: " (player/print-health))))
-                      (recur world)))
+                    (player/damage-health value)
+                    (-> (dommy/sel1 :#health)
+                        (dommy/set-text! (str "HP: " (player/print-health))))
+                    (recur world))
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 

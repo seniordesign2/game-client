@@ -11,37 +11,32 @@
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc save-load-mode nil)
 
-(player/init-player-pos tiles/height tiles/width)
+(player/init-player tiles/height tiles/width 100)
 (client/init)
 
 ;; TESTING FILE READING
 #_(tiles/test-readfile)
 
 ;; Game state cells
-(defc player-pos @player/pos)
-(defc= get-player-pos player-pos)
-
-(defc player-cur-health @player/cur-health)
-(defc player-max-health @player/max-health)
-(defc= get-player-cur-health player-cur-health)
-(defc= get-player-max-health player-max-health)
+(defc player @player/player)
+(defc= get-player player)
 
 ;; Helper functions
-(defn reset-player-pos! []
-  (reset! player-pos @player/pos))
+(defn reset-player! []
+  (reset! player @player/player))
 
 (defn xy-watcher [key ref old new]
   "Watcher function to update player position when the xy cell changes, AKA when the game is loaded."
-  (player/set-player-pos (client/get-xy))
+  (player/set-pos (client/get-xy))
   (swap! client/xy assoc :new false)
-  (reset-player-pos!))
+  (reset-player!))
 (add-watch client/xy nil xy-watcher)
 
 (defn save-load-action [mode username]
   (if (= mode :save)
     (do
-      (reset-player-pos!)
-      (apply client/save-coords username @get-player-pos)))
+      (reset-player!)
+      (apply client/save-coords username (player/get-pos))))
   (if (= mode :load)
     (client/load-coords username)))
 
@@ -97,5 +92,5 @@
   (p :toggle error-message
      (text "Error: ~{error-message}"))
   (p (text "Stored xy: ~{client/xy}"))
-  (p (text "Player pos: ~{get-player-pos}"))
+  (p (text "Player pos: ~{get-player}"))
   (p (text "Record: ~{client/record}"))))

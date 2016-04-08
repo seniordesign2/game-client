@@ -2,35 +2,61 @@
 
 (enable-console-print!)
 
-;; player vars
-(def pos (atom []))
-(def cur-health (atom 0))
-(def max-health (atom 100))
+(def player
+  "The player"
+  (atom {:x nil :y nil
+         :cur-health nil :max-health nil}))
 
-;; Sets the players position
-(defn set-player-pos [[x y]]
-  (reset! pos [x y]))
+(defn set-pos
+  "Sets the player's position."
+  [[x y]]
+  (swap! player assoc :x x)
+  (swap! player assoc :y y))
 
-;; initializes player position to center board
-(defn init-player-pos [height width]
+(defn get-pos
+  "Returns a vector of the player's position."
+  []
+  [(:x @player) (:y @player)])
+
+(defn init-player
+  "Initializes player position to center of board."
+  [height width health]
+  (swap! player assoc :cur-health health)
+  (swap! player assoc :max-health health)
   (let [x (int (/ width 2))
         y (int (/ height 2))]
-    (set-player-pos [x y])))
+    (set-pos [x y])))
+
+(defn is-dead?
+  "Checks if the player is currently dead."
+  []
+  (<= (:cur-health @player) 0))
+
+(defn damage-health
+  "Decreases the player's health by a given value,
+  potentially negative."
+  [damage]
+  (let [p @player]
+    (if (>= (- (:cur-health p) damage) (:max-health p))
+      (swap! player assoc :cur-health (:max-health p))
+      (swap! player update :cur-health #(- % damage)))))
 
 ;; player movement methods
 ;; width and height refer to game board, as board is a 1D vector
 ;; TODO: we WILL need player logic to check for walls / objects before moving
 (defn move-player-left []
-  (swap! pos update 0 dec))
+  (swap! player update :x dec))
 
 (defn move-player-right []
-  (swap! pos update 0 inc))
+  (swap! player update :x inc))
 
-(defn move-player-up [width]
-  (swap! pos update 1 dec))
+(defn move-player-up []
+  (swap! player update :y dec))
 
-(defn move-player-down [width]
-  (swap! pos update 1 inc))
+(defn move-player-down []
+  (swap! player update :y inc))
 
-(defn print-health []
-  (str @cur-health "/" @max-health))
+(defn print-health
+  "Prints the player's health."
+  []
+  (str (:cur-health @player) "/" (:max-health @player)))

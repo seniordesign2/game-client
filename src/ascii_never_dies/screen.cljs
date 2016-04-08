@@ -45,8 +45,6 @@
                     (apply str (map :glyph (nth (:cells screen) row)))
                     "\n"))))))
 
-; Maps will be linked together by simply appending the correct int to each filename for each map
-; Example: map1.txt, map2.txt, map23.txt, map14.txt, so on...
 (defn replace-screen
   "Replaces the given screen with a string representing the new screen."
   [screen replacement]
