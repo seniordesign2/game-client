@@ -5,7 +5,7 @@
    [cljs.core.async :refer [chan]]
    [ascii-never-dies.game :as game]
    [ascii-never-dies.input :as input]
-   [ascii-never-dies.tiles :as tiles]
+   [ascii-never-dies.world :as w]
    [ascii-never-dies.player :as player]))
 
 ;; enable cljs to print to JS console or browser
@@ -44,6 +44,7 @@
 (defn init
   "Initialize the game loop and the input loop."
   []
+  (player/init w/width w/height 100)
   (let [commands (chan)]
     (game/init commands)
     (input/init commands)))

@@ -18,9 +18,9 @@
   []
   [(:x @player) (:y @player)])
 
-(defn init-player
-  "Initializes player position to center of board."
-  [height width health]
+(defn init
+  "Initializes player attributes."
+  [width height health]
   (swap! player assoc :cur-health health)
   (swap! player assoc :max-health health)
   (let [x (int (/ width 2))

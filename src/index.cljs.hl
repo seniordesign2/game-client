@@ -1,6 +1,6 @@
 (page "index.html"
       (:require [ascii-never-dies.core :as client]
-                [ascii-never-dies.tiles :as tiles]
+                [ascii-never-dies.world :as w]
                 [ascii-never-dies.player :as player]
                 [ascii-never-dies.input :as input]))
 
@@ -11,11 +11,7 @@
 (defc= error-message (some-> client/error .-message)) ; contains last command's error message
 (defc save-load-mode nil)
 
-(player/init-player tiles/height tiles/width 100)
 (client/init)
-
-;; TESTING FILE READING
-#_(tiles/test-readfile)
 
 ;; Game state cells
 (defc player @player/player)
@@ -82,8 +78,7 @@
   ;; letters (A) will represent various enemies
   (p :id "health"(text "HP: ~{(player/print-health)}"))
   (br)
-  #_(p :id "board" (text "~{(tiles/print-board)}"))
-  (p :id "board" (text "~{(tiles/print-board)}"))
+  (p :id "board" (text "~{(w/print-board)}"))
   (br)
   
   ;; Error messages and get-record output
@@ -91,6 +86,5 @@
      (text "Processing ~{loading?} requests..."))
   (p :toggle error-message
      (text "Error: ~{error-message}"))
-  (p (text "Stored xy: ~{client/xy}"))
-  (p (text "Player pos: ~{get-player}"))
+  (p (text "Player: ~{get-player}"))
   (p (text "Record: ~{client/record}"))))

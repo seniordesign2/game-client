@@ -3,9 +3,9 @@
    [cljs.core.async.macros :refer [go go-loop]])
   (:require
    [ascii-never-dies.player :as player]
-   [ascii-never-dies.tiles :as tiles]
    [cljs.core.async :refer [chan put! <! >! timeout]]
-   [dommy.core :as dommy]))
+   [dommy.core :as dommy]
+   [ascii-never-dies.world :as w]))
 
 (def initial-world {:status nil
                     :screens [:play]})
@@ -26,11 +26,16 @@
 (defn handle-move
   "Moves the character based on the given key press."
   [key]
-  (case key
-    (:left :h) (player/move-player-left)
-    (:right :l) (player/move-player-right)
-    (:up :k) (player/move-player-up)
-    (:down :j) (player/move-player-down)))
+  (let [[x y] (player/get-pos)]
+    (case key
+      (:left :h) (if-not (w/collision? [(dec x) y])
+                   (player/move-player-left))
+      (:right :l) (if-not (w/collision? [(inc x) y])
+                    (player/move-player-right))
+      (:up :k) (if-not (w/collision? [x (dec y)])
+                 (player/move-player-up))
+      (:down :j) (if-not (w/collision? [x (inc y)])
+                   (player/move-player-down)))))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
@@ -51,8 +56,7 @@
                     (do
                       (plan-tick! 0 commands)
                       (-> (dommy/sel1 :#board)
-                          #_(dommy/set-text! (tiles/print-board))
-                          (dommy/set-text! (tiles/print-board)))
+                          (dommy/set-text! (w/print-board)))
                       (recur new-world))))
 
           :move (do

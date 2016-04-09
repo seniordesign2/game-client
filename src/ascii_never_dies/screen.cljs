@@ -1,5 +1,6 @@
 (ns ascii-never-dies.screen
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [ascii-never-dies.tiles :as tiles]))
 
 (enable-console-print!)
 
@@ -10,7 +11,7 @@
   "Generates a nested vector of new Cells."
   [width height]
   (vec (for [row (range height)]
-         (->> (new Cell "." nil)
+         (->> tiles/floor
               (repeat width)
               (vec)))))
 
@@ -31,6 +32,11 @@
   "Replaces the glyph of the Cell at the given xy position."
   [[x y] glyph screen]
   (assoc-in screen [:cells y x :glyph] glyph))
+
+(defn get-tile
+  "Returns a tile at a specific position."
+  [[x y] screen]
+  (get-in screen [:cells y x]))
 
 (defn stringify
   "Generates a string for the given Screen."
