@@ -4,7 +4,7 @@
 
 (defrecord Tile [glyph color is-solid?])
 
-(def blank (new Tile " " nil false))
+(def error (new Tile "ERROR" nil false))
 (def floor (new Tile "." nil false))
 (def wall (new Tile "#" nil true))
 (def door (new Tile "-" nil false))
@@ -16,4 +16,4 @@
     "." floor
     "#" wall
     "+" door
-    blank))
+    error))
