@@ -34,4 +34,4 @@
   [[x y]]
   (if (or (< x 0) (< y 0) (>= x width) (>= y height))
     true
-    (= "#" (:glyph (screen/get-tile [x y] (to-screen))))))
+    (:is-solid? (screen/get-tile [x y] (to-screen)))))

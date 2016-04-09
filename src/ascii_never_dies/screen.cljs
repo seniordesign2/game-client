@@ -5,7 +5,6 @@
 (enable-console-print!)
 
 (defrecord Screen [width height cells])
-(defrecord Cell [glyph color])
 
 (defn init-cells
   "Generates a nested vector of new Cells."
@@ -58,4 +57,4 @@
     (assoc screen :cells (vec (for [r (range (:height screen))
                                     :let [row (nth (:cells screen) r)
                                           new-row (nth s r)]]
-                                (mapv #(assoc %1 :glyph %2) row new-row))))))
+                                (mapv #(conj %1 (tiles/new-tile-from-map %2)) row new-row))))))
