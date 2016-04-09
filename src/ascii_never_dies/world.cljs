@@ -10,6 +10,7 @@
 (def height 15)
 (def board (screen/new-screen width height))
 (def maps (files/load-maps))
+(def cur-room (atom nil))
 (def rooms (atom []))
 
 (defn get-map
@@ -17,11 +18,22 @@
   [n]
   (nth maps (dec n)))
 
+(defn get-random-map
+  "Decides a random map to load."
+  []
+  (get-map (inc (rand-int (count maps)))))
+
+(defn init
+  "Loads a random map for the starting room."
+  []
+  (reset! cur-room (get-random-map))
+  (swap! rooms conj @cur-room))
+
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
   []
-  (let [s (screen/replace-screen board (get-map 3))]
+  (let [s (screen/replace-screen board @cur-room)]
     (screen/insert (player/get-pos) "@" s)))
 
 (defn print-board
