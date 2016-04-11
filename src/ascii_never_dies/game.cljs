@@ -5,7 +5,8 @@
    [ascii-never-dies.player :as player]
    [cljs.core.async :refer [chan put! <! >! timeout]]
    [dommy.core :as dommy]
-   [ascii-never-dies.world :as w]))
+   [ascii-never-dies.world :as w]
+   [ascii-never-dies.screen :as screen]))
 
 (def initial-world {:status nil
                     :screens [:play]})
@@ -35,7 +36,10 @@
       (:up :k) (if-not (w/collision? [x (dec y)])
                  (player/move-player-up))
       (:down :j) (if-not (w/collision? [x (inc y)])
-                   (player/move-player-down)))))
+                   (player/move-player-down))))
+  (let [[x y] (player/get-pos)] ; I know this is probably wrong, but meh
+    (if (= "-" (:glyph (screen/get-tile [x y] (w/to-screen false))))
+      (println "DOOR!"))))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."

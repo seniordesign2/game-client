@@ -32,9 +32,11 @@
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
-  []
+  [& hide-player]
   (let [s (screen/replace-screen board @cur-room)]
-    (screen/insert (player/get-pos) "@" s)))
+    (if-not hide-player
+      (screen/insert (player/get-pos) "@" s)
+      s)))
 
 (defn print-board
   "Creates a string out of the current board."
