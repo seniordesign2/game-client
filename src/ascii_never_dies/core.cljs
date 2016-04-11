@@ -45,6 +45,7 @@
   "Initialize the game loop and the input loop."
   []
   (player/init w/width w/height 100)
+  (w/init)
   (let [commands (chan)]
     (game/init commands)
     (input/init commands)))

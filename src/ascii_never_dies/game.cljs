@@ -5,7 +5,8 @@
    [ascii-never-dies.player :as player]
    [cljs.core.async :refer [chan put! <! >! timeout]]
    [dommy.core :as dommy]
-   [ascii-never-dies.world :as w]))
+   [ascii-never-dies.world :as w]
+   [ascii-never-dies.screen :as screen]))
 
 (def initial-world {:status nil
                     :screens [:play]})
@@ -25,7 +26,7 @@
 
 (defn handle-move
   "Moves the character based on the given key press."
-  [key]
+  [key commands]
   (let [[x y] (player/get-pos)]
     (case key
       (:left :h) (if-not (w/collision? [(dec x) y])
@@ -37,8 +38,10 @@
       (:down :j) (if-not (w/collision? [x (inc y)])
                    (player/move-player-down))))
 
-(if (= "^" (:glyph (screen/get-tile (player/get-pos) (w/to-screen false))))
-  (println "TRAP!")))
+  (case (:glyph (screen/get-tile (player/get-pos) (w/to-screen false)))
+    "^" (put! commands [:damage 5])
+    "-" (println "DOOR!")
+    nil))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
@@ -64,7 +67,7 @@
 
           :move (do
                   (println "Key pressed: " value)
-                  (handle-move value)
+                  (handle-move value commands)
                   (recur world))
 
           :damage (do

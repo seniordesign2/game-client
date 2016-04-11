@@ -6,4 +6,4 @@
   []
   (vec (for [map-file (sort-by #(io/.getName %)
                                (rest (file-seq (io/file "assets/maps/"))))]
-    (slurp map-file))))
+         (slurp map-file))))
