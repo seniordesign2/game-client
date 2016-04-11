@@ -6,17 +6,23 @@
 
 (enable-console-print!)
 
+(defrecord Room [screen n e w s])
+
 (def width 25)
 (def height 15)
-(def board (screen/new-screen width height))
+(def empty-board (screen/new-screen width height))
 (def maps (files/load-maps))
-(def cur-room (atom nil))
-(def rooms (atom []))
+(def room-idx
+  "The index of which room the player is in."
+  (atom nil))
+(def rooms
+  "A vector of every room in the game world."
+  (atom []))
 
 (defn get-map
-  "Returns a map. n is what order it was loaded in alphabetically."
+  "Returns a map as a screen. n is what order it was loaded in alphabetically."
   [n]
-  (nth maps (dec n)))
+  (screen/replace-screen empty-board (nth maps (dec n))))
 
 (defn get-random-map
   "Decides a random map to load."
@@ -26,14 +32,15 @@
 (defn init
   "Loads a random map for the starting room."
   []
-  (reset! cur-room (get-random-map))
-  (swap! rooms conj @cur-room))
+  (let [new-room (new Room (get-random-map) nil nil nil nil)]
+    (reset! room-idx 0)
+    (swap! rooms conj new-room)))
 
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
   [& hide-player]
-  (let [s (screen/replace-screen board @cur-room)]
+  (let [s (:screen (nth @rooms @room-idx))]
     (if-not hide-player
       (screen/insert (player/get-pos) "@" s)
       s)))
