@@ -26,7 +26,7 @@
 
 (defn handle-move
   "Moves the character based on the given key press."
-  [key]
+  [key commands]
   (let [[x y] (player/get-pos)]
     (case key
       (:left :h) (if-not (w/collision? [(dec x) y])
@@ -37,9 +37,11 @@
                  (player/move-player-up))
       (:down :j) (if-not (w/collision? [x (inc y)])
                    (player/move-player-down))))
-  (let [[x y] (player/get-pos)] ; I know this is probably wrong, but meh
-    (if (= "-" (:glyph (screen/get-tile [x y] (w/to-screen false))))
-      (println "DOOR!"))))
+
+  (case (:glyph (screen/get-tile (player/get-pos) (w/to-screen false)))
+    "^" (put! commands [:damage 5])
+    "-" (println "DOOR!")
+    nil))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
@@ -65,7 +67,7 @@
 
           :move (do
                   (println "Key pressed: " value)
-                  (handle-move value)
+                  (handle-move value commands)
                   (recur world))
 
           :damage (do

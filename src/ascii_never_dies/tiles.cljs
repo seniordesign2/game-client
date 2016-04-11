@@ -7,6 +7,7 @@
 (def error (new Tile "ERROR" nil false))
 (def floor (new Tile "." nil false))
 (def wall (new Tile "#" nil true))
+(def trap (new Tile "^" nil false))
 (def door (new Tile "-" nil false))
 
 (defn new-tile-from-map
@@ -15,5 +16,6 @@
   (case symbol
     "." floor
     "#" wall
+    "^" trap
     "+" door
     error))
