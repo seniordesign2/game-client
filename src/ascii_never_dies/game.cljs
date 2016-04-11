@@ -35,7 +35,10 @@
       (:up :k) (if-not (w/collision? [x (dec y)])
                  (player/move-player-up))
       (:down :j) (if-not (w/collision? [x (inc y)])
-                   (player/move-player-down)))))
+                   (player/move-player-down))))
+
+(if (= "^" (:glyph (screen/get-tile (player/get-pos) (w/to-screen false))))
+  (println "TRAP!")))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
