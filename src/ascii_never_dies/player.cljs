@@ -18,6 +18,19 @@
   []
   [(:x @player) (:y @player)])
 
+;;
+;; TODO: Make this not hardcoded
+;;
+(defn enter-room
+  "Moves the player to the appropriate position for enter a room
+  from a given direction."
+  [from-dir]
+  (case from-dir
+    :n (set-pos [12 1])
+    :e (set-pos [23 7])
+    :w (set-pos [1 7])
+    :s (set-pos [12 13])))
+
 (defn init
   "Initializes player attributes."
   [width height health]

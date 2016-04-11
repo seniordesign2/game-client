@@ -39,7 +39,23 @@
                    (player/move-player-down))))
   (let [[x y] (player/get-pos)] ; I know this is probably wrong, but meh
     (if (= "-" (:glyph (screen/get-tile [x y] (w/to-screen false))))
-      (println "DOOR!"))))
+      (do
+        (println "DOOR!\nfrom room: " @w/room-idx)
+        ;;
+        ;; TODO: Make this not hardcoded
+        ;;
+        (cond
+          (= y 0) (do
+                    (w/enter-room :n :s)
+                    (player/enter-room :s))
+          (= x 24) (do
+                    (w/enter-room :e :w)
+                    (player/enter-room :w))
+          (= x 0) (do (w/enter-room :w :e)
+                      (player/enter-room :e))
+          (= y 14) (do (w/enter-room :s :n)
+                       (player/enter-room :n)))
+        (println "to room: " @w/room-idx)))))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
