@@ -10,7 +10,7 @@
 
 (def width 25)
 (def height 15)
-(def empty-board (screen/new-screen width height))
+(def empty-screen (screen/new-screen width height))
 (def maps (files/load-maps))
 (def room-idx
   "The index of which room the player is in."
@@ -22,12 +22,17 @@
 (defn get-map
   "Returns a map as a screen. n is what order it was loaded in alphabetically."
   [n]
-  (screen/replace-screen empty-board (nth maps (dec n))))
+  (screen/replace-screen empty-screen (nth maps (dec n))))
 
 (defn get-random-map
   "Decides a random map to load."
   []
   (get-map (inc (rand-int (count maps)))))
+
+(defn get-current-room
+  "Returns the room the player is in."
+  []
+  (nth @rooms @room-idx))
 
 (defn init
   "Loads a random map for the starting room."
@@ -36,11 +41,22 @@
     (reset! room-idx 0)
     (swap! rooms conj new-room)))
 
+(defn enter-room
+  "Tries to enter a room - if it doesn't exist, creates it first."
+  [to-dir from-dir]
+  (let [to [@room-idx to-dir]]
+    (if (get-in @rooms to)
+      (reset! room-idx (get-in @rooms to))
+      (let [from-room (assoc (new Room (get-random-map) nil nil nil nil) from-dir @room-idx)]
+        (reset! room-idx (count @rooms))
+        (swap! rooms assoc-in to (count @rooms))
+        (swap! rooms conj from-room)))))
+
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
   [& hide-player]
-  (let [s (:screen (nth @rooms @room-idx))]
+  (let [s (:screen (get-current-room))]
     (if-not hide-player
       (screen/insert (player/get-pos) "@" s)
       s)))

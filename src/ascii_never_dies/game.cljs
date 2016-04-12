@@ -38,10 +38,24 @@
       (:down :j) (if-not (w/collision? [x (inc y)])
                    (player/move-player-down))))
 
-  (case (:glyph (screen/get-tile (player/get-pos) (w/to-screen false)))
-    "^" (put! commands [:damage 5])
-    "-" (println "DOOR!")
-    nil))
+  (let [[x y] (player/get-pos)]
+    (case (:glyph (screen/get-tile [x y] (w/to-screen false)))
+      "^" (put! commands [:damage 5])
+      "-" (do
+            (println "DOOR!\nfrom room: " @w/room-idx)
+            (cond
+              (= y 0) (do
+                        (w/enter-room :n :s)
+                        (player/enter-room w/width w/height :s))
+              (= x (dec w/width)) (do
+                                    (w/enter-room :e :w)
+                                    (player/enter-room w/width w/height :w))
+              (= x 0) (do (w/enter-room :w :e)
+                          (player/enter-room w/width w/height :e))
+              (= y (dec w/height)) (do (w/enter-room :s :n)
+                                       (player/enter-room w/width w/height :n)))
+            (println "to room: " @w/room-idx))
+      nil)))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."
