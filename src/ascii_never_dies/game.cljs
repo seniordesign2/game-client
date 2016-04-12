@@ -44,14 +44,14 @@
         (cond
           (= y 0) (do
                     (w/enter-room :n :s)
-                    (player/enter-room :s))
+                    (player/enter-room w/width w/height :s))
           (= x (dec w/width)) (do
                                 (w/enter-room :e :w)
-                                (player/enter-room :w))
+                                (player/enter-room w/width w/height :w))
           (= x 0) (do (w/enter-room :w :e)
-                      (player/enter-room :e))
+                      (player/enter-room w/width w/height :e))
           (= y (dec w/height)) (do (w/enter-room :s :n)
-                                   (player/enter-room :n)))
+                                   (player/enter-room w/width w/height :n)))
         (println "to room: " @w/room-idx)))))
 
 (defn game!

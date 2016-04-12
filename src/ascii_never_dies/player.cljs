@@ -10,8 +10,8 @@
 (defn set-pos
   "Sets the player's position."
   [[x y]]
-  (swap! player assoc :x x)
-  (swap! player assoc :y y))
+  (swap! player assoc :x (int x))
+  (swap! player assoc :y (int y)))
 
 (defn get-pos
   "Returns a vector of the player's position."
@@ -24,12 +24,12 @@
 (defn enter-room
   "Moves the player to the appropriate position for enter a room
   from a given direction."
-  [from-dir]
+  [width height from-dir]
   (case from-dir
-    :n (set-pos [12 1])
-    :e (set-pos [23 7])
-    :w (set-pos [1 7])
-    :s (set-pos [12 13])))
+    :n (set-pos [(/ width 2) 1])
+    :e (set-pos [(- width 2) (/ height 2)])
+    :w (set-pos [1 (/ height 2)])
+    :s (set-pos [(/ width 2) (- height 2)])))
 
 (defn init
   "Initializes player attributes."

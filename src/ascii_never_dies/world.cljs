@@ -29,6 +29,11 @@
   []
   (get-map (inc (rand-int (count maps)))))
 
+(defn get-current-room
+  "Returns the room the player is in."
+  []
+  (nth @rooms @room-idx))
+
 (defn init
   "Loads a random map for the starting room."
   []
@@ -51,7 +56,7 @@
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
   [& hide-player]
-  (let [s (:screen (nth @rooms @room-idx))]
+  (let [s (:screen (get-current-room))]
     (if-not hide-player
       (screen/insert (player/get-pos) "@" s)
       s)))
