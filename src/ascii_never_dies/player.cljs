@@ -18,9 +18,6 @@
   []
   [(:x @player) (:y @player)])
 
-;;
-;; TODO: Make this not hardcoded
-;;
 (defn enter-room
   "Moves the player to the appropriate position for enter a room
   from a given direction."

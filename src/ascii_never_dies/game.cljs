@@ -6,7 +6,8 @@
    [cljs.core.async :refer [chan put! <! >! timeout]]
    [dommy.core :as dommy]
    [ascii-never-dies.world :as w]
-   [ascii-never-dies.screen :as screen]))
+   [ascii-never-dies.screen :as screen]
+   [ascii-never-dies.traps :as traps]))
 
 (def initial-world {:status nil
                     :screens [:play]})
@@ -38,18 +39,19 @@
       (:down :j) (if-not (w/collision? [x (inc y)])
                    (player/move-player-down))))
 
-  (let [[x y] (player/get-pos)]
-    (case (:glyph (screen/get-tile [x y] (w/to-screen false)))
-      "^" (put! commands [:damage 5])
+  (let [[x y] (player/get-pos)
+        tile (screen/get-tile [x y] (w/to-screen false))]
+    (case (-> tile
+              :attributes
+              :glyph)
+      "^" (put! commands (:effect tile))
       "-" (do
             (println "DOOR!\nfrom room: " @w/room-idx)
             (cond
-              (= y 0) (do
-                        (w/enter-room :n :s)
-                        (player/enter-room w/width w/height :s))
-              (= x (dec w/width)) (do
-                                    (w/enter-room :e :w)
-                                    (player/enter-room w/width w/height :w))
+              (= y 0) (do (w/enter-room :n :s)
+                          (player/enter-room w/width w/height :s))
+              (= x (dec w/width)) (do (w/enter-room :e :w)
+                                      (player/enter-room w/width w/height :w))
               (= x 0) (do (w/enter-room :w :e)
                           (player/enter-room w/width w/height :e))
               (= y (dec w/height)) (do (w/enter-room :s :n)
@@ -89,6 +91,10 @@
                     (-> (dommy/sel1 :#health)
                         (dommy/set-text! (str "HP: " (player/print-health))))
                     (recur world))
+
+          :teleport (do
+                      (println "Teleported " value " away")
+                      (recur world))
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 

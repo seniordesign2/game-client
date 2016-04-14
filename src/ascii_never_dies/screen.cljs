@@ -25,12 +25,13 @@
    (clear-screen " " screen))
   ([glyph screen]
    (assoc screen :cells (vec (for [row (range (:height screen))]
-                               (mapv #(assoc % :glyph glyph) (nth (:cells screen) row)))))))
+                               (mapv #(assoc-in % [:attributes :glyph] glyph)
+                                     (nth (:cells screen) row)))))))
 
 (defn insert
   "Replaces the glyph of the Cell at the given xy position."
   [[x y] glyph screen]
-  (assoc-in screen [:cells y x :glyph] glyph))
+  (assoc-in screen [:cells y x :attributes :glyph] glyph))
 
 (defn get-tile
   "Returns a tile at a specific position."
@@ -47,7 +48,8 @@
         s
         (recur (inc row)
                (str s
-                    (apply str (map :glyph (nth (:cells screen) row)))
+                    (apply str (map #(get-in % [:attributes :glyph])
+                                    (nth (:cells screen) row)))
                     "\n"))))))
 
 (defn replace-screen
