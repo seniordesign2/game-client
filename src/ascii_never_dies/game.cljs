@@ -48,13 +48,13 @@
       "-" (do
             (println "DOOR!\nfrom room: " @w/room-idx)
             (cond
-              (= y 0) (do (w/enter-room :n :s)
+              (= y 0) (do (w/enter-room :n)
                           (player/enter-room w/width w/height :s))
-              (= x (dec w/width)) (do (w/enter-room :e :w)
+              (= x (dec w/width)) (do (w/enter-room :e)
                                       (player/enter-room w/width w/height :w))
-              (= x 0) (do (w/enter-room :w :e)
+              (= x 0) (do (w/enter-room :w)
                           (player/enter-room w/width w/height :e))
-              (= y (dec w/height)) (do (w/enter-room :s :n)
+              (= y (dec w/height)) (do (w/enter-room :s)
                                        (player/enter-room w/width w/height :n)))
             (println "to room: " @w/room-idx))
       nil)))

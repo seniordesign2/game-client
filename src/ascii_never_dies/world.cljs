@@ -6,7 +6,7 @@
 
 (enable-console-print!)
 
-(defrecord Room [screen n e w s])
+(defrecord Room [screen x y])
 
 (def width 25)
 (def height 15)
@@ -14,7 +14,7 @@
 (def maps (files/load-maps))
 (def room-idx
   "The index of which room the player is in."
-  (atom nil))
+  (atom {:x nil :y nil}))
 (def rooms
   "A vector of every room in the game world."
   (atom []))
@@ -29,28 +29,48 @@
   []
   (get-map (inc (rand-int (count maps)))))
 
+(defn get-room
+  "Returns the room at the specified coords, or nil if it doesn't exist."
+  [{x :x y :y}]
+  (some #(if (and (= x (:x %))
+                  (= y (:y %)))
+           %)
+        @rooms))
+
 (defn get-current-room
   "Returns the room the player is in."
   []
-  (nth @rooms @room-idx))
+  (get-room @room-idx))
 
 (defn init
   "Loads a random map for the starting room."
   []
-  (let [new-room (new Room (get-random-map) nil nil nil nil)]
-    (reset! room-idx 0)
+  (let [new-room (new Room (get-random-map) 0 0)]
+    (reset! room-idx {:x 0 :y 0})
     (swap! rooms conj new-room)))
+
+(defn get-new-coords
+  "Based on the direction passed to it,
+  returns the coords of the room the player is moving into."
+  [dir]
+  (let [x (:x @room-idx)
+        y (:y @room-idx)]
+    (case dir
+      :n {:x x :y (dec y)}
+      :e {:x (inc x) :y y}
+      :w {:x (dec x) :y y}
+      :s {:x x :y (inc y)})))
 
 (defn enter-room
   "Tries to enter a room - if it doesn't exist, creates it first."
-  [to-dir from-dir]
-  (let [to [@room-idx to-dir]]
-    (if (get-in @rooms to)
-      (reset! room-idx (get-in @rooms to))
-      (let [from-room (assoc (new Room (get-random-map) nil nil nil nil) from-dir @room-idx)]
-        (reset! room-idx (count @rooms))
-        (swap! rooms assoc-in to (count @rooms))
-        (swap! rooms conj from-room)))))
+  [dir]
+  (let [new-coords (get-new-coords dir)]
+    (reset! room-idx new-coords)
+    (if-not (get-room new-coords)
+      (let [room (-> (new Room (get-random-map) nil nil)
+                     (assoc :x (:x new-coords))
+                     (assoc :y (:y new-coords)))]
+        (swap! rooms conj room)))))
 
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
