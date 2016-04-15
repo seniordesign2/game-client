@@ -1,8 +1,0 @@
-(ns ascii-never-dies.tiles
-  (:require [clojure.string :as str]))
-
-;; vectors to be updated with game info
-(def vRowA (vector "." "." "." "." "." "." "." "." "." "." "."))
-
-;; string sequences of each vector to be printed by index.cljs.hl
-(def strRowA (clojure.string/join vRowA))
