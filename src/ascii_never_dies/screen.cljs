@@ -4,7 +4,7 @@
 
 (enable-console-print!)
 
-(defrecord Screen [width height cells])
+(def Screen {:width nil :height nil :cells nil})
 
 (defn init-cells
   "Generates a nested vector of new Cells."
@@ -17,7 +17,10 @@
 (defn new-screen
   "Generates a new Screen."
   [width height]
-  (new Screen width height (init-cells width height)))
+  (assoc Screen
+         :width width
+         :height height
+         :cells (init-cells width height)))
 
 (defn clear-screen
   "Reverts every Cell in a given Screen to the supplied glyph, or <space>"
@@ -25,13 +28,13 @@
    (clear-screen " " screen))
   ([glyph screen]
    (assoc screen :cells (vec (for [row (range (:height screen))]
-                               (mapv #(assoc-in % [:attributes :glyph] glyph)
+                               (mapv #(assoc-in % [:attr :glyph] glyph)
                                      (nth (:cells screen) row)))))))
 
 (defn insert
   "Replaces the glyph of the Cell at the given xy position."
   [[x y] glyph screen]
-  (assoc-in screen [:cells y x :attributes :glyph] glyph))
+  (assoc-in screen [:cells y x :attr :glyph] glyph))
 
 (defn get-tile
   "Returns a tile at a specific position."
@@ -48,7 +51,7 @@
         s
         (recur (inc row)
                (str s
-                    (apply str (map #(get-in % [:attributes :glyph])
+                    (apply str (map #(get-in % [:attr :glyph])
                                     (nth (:cells screen) row)))
                     "\n"))))))
 

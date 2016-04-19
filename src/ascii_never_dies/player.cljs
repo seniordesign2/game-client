@@ -51,6 +51,11 @@
       (swap! player assoc :cur-health (:max-health p))
       (swap! player update :cur-health #(- % damage)))))
 
+(defn set-health
+  "Sets the player's health to an absolute value."
+  [new-health]
+  (swap! player assoc :cur-health new-health))
+
 ;; player movement methods
 ;; width and height refer to game board, as board is a 1D vector
 ;; TODO: we WILL need player logic to check for walls / objects before moving

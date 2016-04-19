@@ -8,38 +8,63 @@
    [ascii-never-dies.world :as w]
    [ascii-never-dies.player :as player]))
 
-;; enable cljs to print to JS console or browser
 (enable-console-print!)
 
+;; ---------------------------------------------------------------------------
 ;; RPC update cells
+
 (jav/defc record nil)
 (jav/defc error nil)
 (jav/defc loading nil)
-(jav/defc xy nil)
+(jav/defc state nil)
+
+;; ---------------------------------------------------------------------------
+;; Data unloading functions
 
 (defn get-xy
-  "Returns the contents of the xy cell as a vector."
+  "Returns the player's xy coords in the current room."
   []
-  (let [{x :x y :y} @xy]
+  (let [{x :x y :y} (:player @state)]
     [x y]))
 
+(defn get-health
+  "Returns the player's current health."
+  []
+  (get-in @state [:player :cur-health] -1))
+
+(defn get-room-idx
+  "Returns the coords of the room the player is currently in."
+  []
+  (:room-idx @state))
+
+(defn get-rooms
+  "Returns every room visited so far."
+  []
+  (:rooms @state))
+
+;; ---------------------------------------------------------------------------
+;; RPC functions
+
 (def url "https://ascii-never-dies.herokuapp.com/")
-(def get-record
-  (cas/mkremote 'ascii-never-dies.handler/get-record
+(def get-user
+  (cas/mkremote 'ascii-never-dies.handler/get-user
                 record error loading
                 {:url url}))
-(def update-record
-  (cas/mkremote 'ascii-never-dies.handler/update-record
+(def add-user
+  (cas/mkremote 'ascii-never-dies.handler/add-user
                 record error loading
                 {:url url}))
-(def save-coords
-  (cas/mkremote 'ascii-never-dies.handler/save-coords
+(def save
+  (cas/mkremote 'ascii-never-dies.handler/save
                 record error loading
                 {:url url}))
-(def load-coords
-  (cas/mkremote 'ascii-never-dies.handler/load-coords
-                xy error loading
+(def load
+  (cas/mkremote 'ascii-never-dies.handler/load
+                state error loading
                 {:url url}))
+
+;; ---------------------------------------------------------------------------
+;; Initialization
 
 (defn init
   "Initialize the game loop and the input loop."

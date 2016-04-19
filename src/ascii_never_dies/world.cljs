@@ -6,7 +6,7 @@
 
 (enable-console-print!)
 
-(defrecord Room [screen x y])
+(def Room {:scr nil :x nil :y nil})
 
 (def width 25)
 (def height 15)
@@ -42,10 +42,22 @@
   []
   (get-room @room-idx))
 
+(defn set-room-idx
+  "Resets the current room's world coords."
+  [idx]
+  (reset! room-idx idx))
+
+(defn set-rooms
+  "Resets the current vector of rooms."
+  [rs]
+  (reset! rooms rs))
+
 (defn init
   "Loads a random map for the starting room."
   []
-  (let [new-room (new Room (get-random-map) 0 0)]
+  (let [new-room (assoc Room
+                        :scr (get-random-map)
+                        :x 0 :y 0)]
     (reset! room-idx {:x 0 :y 0})
     (swap! rooms conj new-room)))
 
@@ -67,16 +79,18 @@
   (let [new-coords (get-new-coords dir)]
     (reset! room-idx new-coords)
     (if-not (get-room new-coords)
-      (let [room (-> (new Room (get-random-map) nil nil)
-                     (assoc :x (:x new-coords))
-                     (assoc :y (:y new-coords)))]
+      (let [x (:x new-coords)
+            y (:y new-coords)
+            room (assoc Room
+                        :scr (get-random-map)
+                        :x x :y y)]
         (swap! rooms conj room)))))
 
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
   and creates a new screen out of the base board."
   [& hide-player]
-  (let [s (:screen (get-current-room))]
+  (let [s (:scr (get-current-room))]
     (if-not hide-player
       (screen/insert (player/get-pos) "@" s)
       s)))
@@ -92,5 +106,5 @@
   (if (or (< x 0) (< y 0) (>= x width) (>= y height))
     true
     (-> (screen/get-tile [x y] (to-screen))
-        :attributes
+        :attr
         :is-solid?)))

@@ -6,39 +6,60 @@
 
 (enable-console-print!)
 
-;; RPC message cells
-(defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
-(defc= error-message (some-> client/error .-message)) ; contains last command's error message
-(defc save-load-mode nil)
-
 (client/init)
 
-;; Game state cells
-(defc player @player/player)
-(defc= get-player player)
+;; ---------------------------------------------------------------------------
+;; RPC message cells
 
+(defc= loading? (some-> client/loading seq count)) ; contains count of in-flight commands
+(defc= error-message (some-> client/error .-message)) ; contains last command's error message
+
+;; ---------------------------------------------------------------------------
+;; Game state
+
+(defn get-state
+  "Pulls all relevant data into the local state map."
+  []
+  (assoc {}
+         :player @player/player
+         :rooms @w/rooms :room-idx @w/room-idx))
+
+(defc state (get-state))
+
+(defn reset-state!
+  "Reset stored state to local values."
+  []
+  (reset! state (get-state)))
+
+;; ---------------------------------------------------------------------------
 ;; Helper functions
-(defn reset-player! []
-  (reset! player @player/player))
 
-(defn xy-watcher [key ref old new]
-  "Watcher function to update player position when the xy cell changes, AKA when the game is loaded."
-  (player/set-pos (client/get-xy))
-  (swap! client/xy assoc :new false)
-  (reset-player!))
-(add-watch client/xy nil xy-watcher)
+(defc save-load-mode nil)
 
 (defn save-load-action [mode username]
-  (if (= mode :save)
-    (do
-      (reset-player!)
-      (apply client/save-coords username (player/get-pos))))
-  (if (= mode :load)
-    (client/load-coords username)))
+  "Handles clicking either the save or load button."
+  (case mode
+    :save (do
+            (reset-state!)
+            (println @state)
+            (try
+              (client/save username @state)
+              (catch js/Object e
+                (.log js/console e))))
+    :load (client/load username)))
 
-;;;;;;;;;;;;;;;;;;;;
-; HTML
-;;;;;;;;;;;;;;;;;;;;
+(defn load-watcher
+  "Watches to see if the game was loaded, then set appropriate values."
+  [key ref old new]
+  (player/set-pos (client/get-xy))
+  (player/set-health (client/get-health))
+  (w/set-room-idx (client/get-room-idx))
+  (w/set-rooms (client/get-rooms))
+  (swap! client/state assoc :new false))
+(add-watch client/state nil load-watcher)
+
+;; ---------------------------------------------------------------------------
+;; HTML
 
 (html
  (head
@@ -46,14 +67,14 @@
  (body
   ;; Form to get a record from server db
   (let [username (cell nil)]
-    (form :submit #(client/get-record @username)
+    (form :submit #(client/get-user @username)
           (p (label "Username search: ")
              (input :value username :change #(reset! username @%))
              (button :type "submit" "submit"))))
 
   ;; Form to add a record to the server db
   (let [content (cell nil)]
-    (form :submit #(client/update-record @content)
+    (form :submit #(client/add-user @content)
           (p (label "Add username: ")
              (input :value content :change #(reset! content @%))
              (button :type "submit" "submit"))))
@@ -86,5 +107,4 @@
      (text "Processing ~{loading?} requests..."))
   (p :toggle error-message
      (text "Error: ~{error-message}"))
-  (p (text "Player: ~{get-player}"))
   (p (text "Record: ~{client/record}"))))

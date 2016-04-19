@@ -42,21 +42,21 @@
   (let [[x y] (player/get-pos)
         tile (screen/get-tile [x y] (w/to-screen false))]
     (case (-> tile
-              :attributes
-              :glyph)
-      "^" (put! commands (:effect tile))
-      "-" (do
-            (println "DOOR!\nfrom room: " @w/room-idx)
-            (cond
-              (= y 0) (do (w/enter-room :n)
-                          (player/enter-room w/width w/height :s))
-              (= x (dec w/width)) (do (w/enter-room :e)
-                                      (player/enter-room w/width w/height :w))
-              (= x 0) (do (w/enter-room :w)
-                          (player/enter-room w/width w/height :e))
-              (= y (dec w/height)) (do (w/enter-room :s)
-                                       (player/enter-room w/width w/height :n)))
-            (println "to room: " @w/room-idx))
+              :attr
+              :name)
+      "trap" (put! commands (:effect tile))
+      "door" (do
+               (println "DOOR!\nfrom room: " @w/room-idx)
+               (cond
+                 (= y 0) (do (w/enter-room :n)
+                             (player/enter-room w/width w/height :s))
+                 (= x (dec w/width)) (do (w/enter-room :e)
+                                         (player/enter-room w/width w/height :w))
+                 (= x 0) (do (w/enter-room :w)
+                             (player/enter-room w/width w/height :e))
+                 (= y (dec w/height)) (do (w/enter-room :s)
+                                          (player/enter-room w/width w/height :n)))
+               (println "to room: " @w/room-idx))
       nil)))
 
 (defn game!

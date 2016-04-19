@@ -1,12 +1,12 @@
 (ns ascii-never-dies.traps)
 
-(defrecord Trap [attributes effect])
+(def Trap {:attr nil :effect nil})
 
 ;; List of all traps
-(def traps [(new Trap nil [:damage 5])
-            (new Trap nil [:teleport 2])])
+(def traps [(assoc Trap :effect [:damage 5])
+            (assoc Trap :effect [:teleport 2])])
 
 (defn get-random-trap
   "Returns a random trap."
-  [attrib]
-  (assoc (rand-nth traps) :attributes attrib))
+  [attr]
+  (assoc (rand-nth traps) :attr attr))
