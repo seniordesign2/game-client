@@ -24,18 +24,18 @@
 (defn get-xy
   "Returns the player's xy coords in the current room."
   []
-  (let [{x :x y :y} (:player @state)]
+  (let [{x :x y :y} @state]
     [x y]))
 
 (defn get-health
   "Returns the player's current health."
   []
-  (get-in @state [:player :cur-health] -1))
+  (:cur_health @state))
 
 (defn get-room-idx
   "Returns the coords of the room the player is currently in."
   []
-  (:room-idx @state))
+  (:room_idx @state))
 
 (defn get-rooms
   "Returns every room visited so far."

@@ -51,6 +51,8 @@
 (defn load-watcher
   "Watches to see if the game was loaded, then set appropriate values."
   [key ref old new]
+  (println @client/state)
+  (println (:player @client/state))
   (player/set-pos (client/get-xy))
   (player/set-health (client/get-health))
   (w/set-room-idx (client/get-room-idx))

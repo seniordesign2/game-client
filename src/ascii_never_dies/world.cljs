@@ -107,4 +107,4 @@
     true
     (-> (screen/get-tile [x y] (to-screen))
         :attr
-        :is-solid?)))
+        :is-solid)))
