@@ -10,3 +10,9 @@
   "Returns a random trap."
   [attr]
   (assoc (rand-nth traps) :attr attr))
+
+(defn get-effect
+  "Returns the effect of the trap, formatted as a keyword and value."
+  [trap]
+  (let [e (:effect trap)]
+    [(keyword (first e)) (second e)]))

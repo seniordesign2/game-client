@@ -44,7 +44,9 @@
     (case (-> tile
               :attr
               :name)
-      "trap" (put! commands (:effect tile))
+      "trap" (do
+               (println (str "Trap: " (traps/get-effect tile)))
+               (put! commands (traps/get-effect tile)))
       "door" (do
                (println "DOOR!\nfrom room: " @w/room-idx)
                (cond
@@ -79,6 +81,8 @@
                       (plan-tick! 0 commands)
                       (-> (dommy/sel1 :#board)
                           (dommy/set-text! (w/print-board)))
+                      (-> (dommy/sel1 :#health)
+                          (dommy/set-text! (str "HP: " (player/print-health))))
                       (recur new-world))))
 
           :move (do
@@ -88,13 +92,9 @@
 
           :damage (do
                     (player/damage-health value)
-                    (-> (dommy/sel1 :#health)
-                        (dommy/set-text! (str "HP: " (player/print-health))))
                     (recur world))
 
-          :teleport (do
-                      (println "Teleported " value " away")
-                      (recur world))
+          :teleport (recur world)
 
           (throw (js/Error. (str "Unrecognized game command: " cmd))))))))
 
