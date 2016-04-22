@@ -41,9 +41,7 @@
 
   (let [[x y] (player/get-pos)
         tile (screen/get-tile [x y] (w/to-screen false))]
-    (case (-> tile
-              :attr
-              :name)
+    (case (:name tile)
       "trap" (do
                (println (str "Trap: " (traps/get-effect tile)))
                (put! commands (traps/get-effect tile)))
