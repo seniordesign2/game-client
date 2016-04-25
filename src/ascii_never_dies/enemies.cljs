@@ -10,7 +10,37 @@
               (assoc Enemy
                      :glyph "g"
                      :type "goblin"
-                     :max-health 5)])
+                     :max-health 5)
+
+              (assoc Enemy
+                     :glyph "s"
+                     :type "spoopy spider"
+                     :max-health 10)
+
+              (assoc Enemy 
+                     :glyph "d"
+                     :type "demon"
+                     :max-health 666)
+
+              (assoc Enemy
+                     :glyph "p"
+                     :type "poltergeist"
+                     :max-health 1000)
+
+              (assoc Enemy
+                     :glyph "m"
+                     :type "money bag"
+                     :max-health 7777)
+
+              (assoc Enemy
+                     :glyph "n"
+                     :type "Ninja Brian"
+                     :max-health 69)
+
+              (assoc Enemy
+                     :glyph "b"
+                     :type "Mr. Bones"
+                     :max-health Integer/MAX_VALUE)])
 
 (defn get-random-enemy
   "Returns a random enemy type."
