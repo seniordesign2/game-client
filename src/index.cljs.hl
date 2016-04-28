@@ -98,7 +98,7 @@
   ;; letters (A) will represent various enemies
   (p :id "health"(text "HP: ~{(player/print-health)}"))
   (br)
-  (p :id "board" (text "~{(w/print-board)}"))
+  (p :id "board")
   (br)
   
   ;; Error messages and get-record output
