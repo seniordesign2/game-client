@@ -51,7 +51,21 @@
         s
         (recur (inc row)
                (str s
-                    (apply str (map #(str "<span>" (:glyph %) "</span>")
+                    (apply str (map #(:glyph %)
+                                    (nth (:cells screen) row)))
+                    "\n"))))))
+
+(defn stringify-html
+  "Generates a string for the given Screen."
+  [screen]
+  (let [height (:height screen)]
+    (loop [row 0
+           s ""]
+      (if (>= row height)
+        s
+        (recur (inc row)
+               (str s
+                    (apply str (map #(str "<span style='color:" (:color %) "'>" (:glyph %) "</span>")
                                     (nth (:cells screen) row)))
                     "\n"))))))
 
@@ -74,7 +88,7 @@
                                                                         (tiles/new-tile-from-map
                                                                          (nth new-row x) x y))))))))))
 
-                          #_(for [r (range (:height screen))
-                                :let [row (nth (:cells screen) r)
-                                      new-row (nth s r)]]
-                            (mapv #(conj %1 (tiles/new-tile-from-map %2)) row new-row))))))
+                              #_(for [r (range (:height screen))
+                                      :let [row (nth (:cells screen) r)
+                                            new-row (nth s r)]]
+                                  (mapv #(conj %1 (tiles/new-tile-from-map %2)) row new-row))))))

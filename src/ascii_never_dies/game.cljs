@@ -78,7 +78,7 @@
                     (do
                       (plan-tick! 0 commands)
                       (-> (dommy/sel1 :#board)
-                          (dommy/set-text! (w/print-board)))
+                          (dommy/set-html! (w/print-board)))
                       (-> (dommy/sel1 :#health)
                           (dommy/set-text! (str "HP: " (player/print-health))))
                       (recur new-world))))

@@ -9,27 +9,27 @@
 (def error (assoc Tile
                   :name "ERROR"
                   :glyph "ERROR"
-                  :color nil
+                  :color "#FF0000"
                   :is-solid false))
 (def floor (assoc Tile
                   :name "floor"
                   :glyph "."
-                  :color nil
+                  :color "#00FF00"
                   :is-solid false))
 (def wall  (assoc Tile
                   :name "wall"
                   :glyph "#"
-                  :color nil
+                  :color "#0000FF"
                   :is-solid true))
 (def trap  (assoc Tile
                   :name "trap"
                   :glyph "^"
-                  :color nil
+                  :color "#F0F0F0"
                   :is-solid false))
 (def door  (assoc Tile
                   :name "door"
                   :glyph "-"
-                  :color nil
+                  :color "#0F0F0F"
                   :is-solid false))
 (def enemy (assoc Tile
                   :name "enemy"

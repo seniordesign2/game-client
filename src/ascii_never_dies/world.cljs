@@ -126,7 +126,7 @@
 (defn print-board
   "Creates a string out of the current board."
   []
-  (screen/stringify (to-screen)))
+  (screen/stringify-html (to-screen)))
 
 (defn collision?
   "Decides if a given coordinate in the map will result in a collision."
