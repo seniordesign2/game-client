@@ -1,11 +1,11 @@
-(ns ascii-never-dies.player)
+(ns ascii-never-dies.player
+  (:require [ascii-never-dies.tiles :as tiles]))
 
 (enable-console-print!)
 
 (def player
   "The player"
-  (atom {:x nil :y nil
-         :cur-health nil :max-health nil}))
+  (atom tiles/player))
 
 (defn set-pos
   "Sets the player's position."

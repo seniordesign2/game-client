@@ -117,7 +117,7 @@
   "Adds the player to the screen."
   [scr hide-player]
   (if-not hide-player
-    (screen/insert (player/get-pos) "@" scr)
+    (screen/insert @player/player scr)
     scr))
 
 (defn add-enemies
