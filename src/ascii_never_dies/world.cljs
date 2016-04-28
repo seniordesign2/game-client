@@ -139,19 +139,10 @@
         (add-player hide-player)
         (add-enemies enemies))))
 
-(defn to-screen-html
-  "Gathers all the elements of the game world (player, enemies, etc)
-  and creates a new screen out of the base board."
-  [& hide-player]
-  (let [s (:scr (get-current-room))]
-    (if-not hide-player
-      (screen/insert (player/get-pos) "<span style='color:white'>@</span>" s)
-      s)))
-
 (defn print-board
   "Creates a string out of the current board."
   []
-  (screen/stringify-html (to-screen-html)))
+  (screen/stringify-html (to-screen)))
 
 (defn collision?
   "Decides if a given coordinate in the map will result in a collision."

@@ -37,7 +37,7 @@
 (def player (assoc Tile
                    :name "player"
                    :glyph "@"
-                   :color nil
+                   :color "white"
                    :is-solid true))
 
 (defn new-tile-from-map
