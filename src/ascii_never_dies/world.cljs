@@ -74,24 +74,40 @@
       :w {:x (dec x) :y y}
       :s {:x x :y (inc y)})))
 
-(defn empty-tile
-  "Returns a random empty spot on the given room, or nil.
-  Empty defined as 'is-solid' being false."
+(defn door-check
+  "Returns whether the specified spot is a door or in front of a door."
+  [room tile]
+  (let [{:keys [x y]} tile]
+    (loop [xx -1
+           yy -1]
+      (if (= "door" (:name (screen/get-tile [(+ x xx) (+ y yy)] (:scr room))))
+        true
+        (if (< xx 1)
+          (recur (inc xx) yy)
+          (if (< yy 1)
+            (recur -1 (inc yy))
+            false))))))
+
+(defn empty-tiles
+  "Returns all empty spots in the given room.
+  Empty defined as 'is-solid' being false, not a door, and not in front of a door."
   [room]
-  (let [empties (filterv #(not (:is-solid %)) (-> room
-                                                  (:scr)
-                                                  (:cells)
-                                                  (flatten)))]
-    (if (empty? empties)
-      nil
-      (rand-nth empties))))
+  (set (filter #(not (or (:is-solid %)
+                         (door-check room %))) (-> room
+                                                   (:scr)
+                                                   (:cells)
+                                                   (flatten)))))
 
 (defn generate-enemies
   "Creates a random list of enemies."
   [room]
-  (vec (for [n (range (rand-int 5))
-             :while (empty-tile room)]
-         (enemies/get-random-enemy tiles/enemy (empty-tile room)))))
+  (let [empties (atom (empty-tiles room))]
+    (vec (for [n (range (rand-int 5))
+               :while (seq @empties)
+               :let [spot (first (shuffle @empties))]]
+           (do
+             (swap! empties disj spot)
+             (enemies/get-random-enemy tiles/enemy spot))))))
 
 (defn create-room
   "Creates a new room."
@@ -102,7 +118,6 @@
                     :scr (get-random-map)
                     :x x :y y)
         room (assoc room :enemies (generate-enemies room))]
-    (println (:enemies room))
     (swap! rooms conj room)))
 
 (defn enter-room
