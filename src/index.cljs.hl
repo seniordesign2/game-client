@@ -87,10 +87,10 @@
              (input :value username :change #(reset! username @%)) (br)
              (button :click #(reset! save-load-mode :save)
                      :type "submit"
-                     "Save XY")
+                     "Save")
              (button :click #(reset! save-load-mode :load)
                      :type "submit"
-                     "Load XY"))))
+                     "Load"))))
   
   ;; periods (.) will represent empty space
   ;; hashtag (#) will represent walls 
