@@ -40,7 +40,7 @@
               (assoc Enemy
                      :glyph "b"
                      :type "Mr. Bones"
-                     :max-health Integer/MAX_VALUE)])
+                     :max-health 1)])
 
 (defn get-random-enemy
   "Returns a random enemy type."
