@@ -51,7 +51,7 @@
         s
         (recur (inc row)
                (str s
-                    (apply str (map #(:glyph %)
+                    (apply str (map #(str "<span>" (:glyph %) "</span>")
                                     (nth (:cells screen) row)))
                     "\n"))))))
 
