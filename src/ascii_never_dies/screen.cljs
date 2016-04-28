@@ -58,8 +58,23 @@
 (defn replace-screen
   "Replaces the given screen with a string representing the new screen."
   [screen replacement]
-  (let [s (string/split replacement #"\n" (:height screen))]
-    (assoc screen :cells (vec (for [r (range (:height screen))
-                                    :let [row (nth (:cells screen) r)
-                                          new-row (nth s r)]]
-                                (mapv #(conj %1 (tiles/new-tile-from-map %2)) row new-row))))))
+  (let [s (string/split replacement #"\n")]
+    (assoc screen :cells (vec (loop [y 0
+                                     cells []]
+                                (if (>= y (:height screen))
+                                  cells
+                                  (recur (inc y)
+                                         (conj cells (loop [x 0
+                                                            row []]
+                                                       (if (>= x (:width screen))
+                                                         row
+                                                         (let [new-row (nth s y)]
+                                                           (recur (inc x)
+                                                                  (conj row
+                                                                        (tiles/new-tile-from-map
+                                                                         (nth new-row x) x y))))))))))
+
+                          #_(for [r (range (:height screen))
+                                :let [row (nth (:cells screen) r)
+                                      new-row (nth s r)]]
+                            (mapv #(conj %1 (tiles/new-tile-from-map %2)) row new-row))))))

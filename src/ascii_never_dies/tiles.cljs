@@ -4,7 +4,7 @@
 
 (enable-console-print!)
 
-(def Tile {:name nil :glyph nil :color nil :is-solid nil})
+(def Tile {:name nil :glyph nil :color nil :is-solid nil :x nil :y nil})
 
 (def error (assoc Tile
                   :name "ERROR"
@@ -37,11 +37,13 @@
 
 (defn new-tile-from-map
   "Returns a new tile based on the symbol passed to it."
-  [symbol]
-  (case symbol
-    "." floor
-    "#" wall
-    "^" (traps/get-random-trap trap)
-    "+" door
-    "e" (enemies/get-random-enemy enemy)
-    error))
+  [symbol x y]
+  (assoc (case symbol
+           "." floor
+           "#" wall
+           "^" (traps/get-random-trap trap)
+           "+" door
+           "e" (enemies/get-random-enemy enemy)
+           error)
+         :x x
+         :y y))

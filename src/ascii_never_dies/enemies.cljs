@@ -1,6 +1,6 @@
 (ns ascii-never-dies.enemies)
 
-(def Enemy {:glyph nil :type nil :cur-health nil :max-health nil})
+(def Enemy {:glyph nil :type nil :cur-health nil :max-health nil :x nil :y nil})
 
 ;; List of all enemies
 (def enemies [(assoc Enemy

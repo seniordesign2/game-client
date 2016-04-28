@@ -1,12 +1,13 @@
 (ns ascii-never-dies.world
   (:require [ascii-never-dies.screen :as screen]
             [ascii-never-dies.tiles :as tiles]
-            [ascii-never-dies.player :as player])
+            [ascii-never-dies.player :as player]
+            [ascii-never-dies.enemies :as enemies])
   (:require-macros [ascii-never-dies.filereader :as files]))
 
 (enable-console-print!)
 
-(def Room {:scr nil :x nil :y nil})
+(def Room {:scr nil :x nil :y nil :enemies nil})
 
 (def width 25)
 (def height 15)
@@ -73,18 +74,46 @@
       :w {:x (dec x) :y y}
       :s {:x x :y (inc y)})))
 
+(defn empty-tile
+  "Returns a random empty spot on the given room.
+  Empty defined as 'is-solid' being false."
+  [room]
+  (let [empties (filterv #(not (:is-solid %)) (-> room
+                                                  (:scr)
+                                                  (:cells)
+                                                  (flatten)))]
+    (if (empty? empties)
+      nil
+      (rand-nth empties))))
+
+(defn generate-enemies
+  "Creates a random list of enemies."
+  [room]
+  (println (empty-tile room))
+  (->> tiles/enemy
+       (enemies/get-random-enemy)
+       (repeat (rand-int 5))
+       (vec)))
+
+(defn create-room
+  "Creates a new room."
+  [new-coords]
+  (let [x (:x new-coords)
+        y (:y new-coords)
+        room (assoc Room
+                    :scr (get-random-map)
+                    :x x :y y)
+        room (assoc room :enemies (generate-enemies room))]
+    (println (:enemies room))
+    (swap! rooms conj room)))
+
 (defn enter-room
   "Tries to enter a room - if it doesn't exist, creates it first."
   [dir]
   (let [new-coords (get-new-coords dir)]
     (reset! room-idx new-coords)
     (if-not (get-room new-coords)
-      (let [x (:x new-coords)
-            y (:y new-coords)
-            room (assoc Room
-                        :scr (get-random-map)
-                        :x x :y y)]
-        (swap! rooms conj room)))))
+      (create-room new-coords))))
 
 (defn to-screen
   "Gathers all the elements of the game world (player, enemies, etc)
