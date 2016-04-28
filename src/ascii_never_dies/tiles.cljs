@@ -34,6 +34,11 @@
 (def enemy (assoc Tile
                   :name "enemy"
                   :is-solid true))
+(def player (assoc Tile
+                   :name "player"
+                   :glyph "@"
+                   :color nil
+                   :is-solid true))
 
 (defn new-tile-from-map
   "Returns a new tile based on the symbol passed to it."
@@ -43,7 +48,6 @@
            "#" wall
            "^" (traps/get-random-trap trap)
            "+" door
-           "e" (enemies/get-random-enemy enemy)
            error)
          :x x
          :y y))

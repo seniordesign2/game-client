@@ -33,8 +33,11 @@
 
 (defn insert
   "Replaces the glyph of the Cell at the given xy position."
-  [[x y] glyph screen]
-  (assoc-in screen [:cells y x :glyph] glyph))
+  ([tile screen]
+   (let [{:keys [x y]} tile]
+     (assoc-in screen [:cells y x] tile)))
+  ([[x y] glyph screen]
+   (assoc-in screen [:cells y x :glyph] glyph)))
 
 (defn get-tile
   "Returns a tile at a specific position."
