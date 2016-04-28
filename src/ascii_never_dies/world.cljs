@@ -90,9 +90,8 @@
   "Creates a random list of enemies."
   [room]
   (println (empty-tile room))
-  (->> tiles/enemy
-       (enemies/get-random-enemy)
-       (repeat (rand-int 5))
+  (->> #(enemies/get-random-enemy tiles/enemy)
+       (repeatedly (rand-int 5))
        (vec)))
 
 (defn create-room
