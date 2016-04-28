@@ -44,6 +44,10 @@
 
 (defn get-random-enemy
   "Returns a random enemy type."
-  [tile]
-  (let [enemy (merge tile (rand-nth enemies))]
-    (assoc enemy :cur-health (:max-health enemy))))
+  [tile coords]
+  (let [enemy (merge tile (rand-nth enemies))
+        {:keys [x y]} coords]
+    (assoc enemy
+           :cur-health (:max-health enemy)
+           :x x
+           :y y)))

@@ -43,7 +43,6 @@
            "#" wall
            "^" (traps/get-random-trap trap)
            "+" door
-           "e" (enemies/get-random-enemy enemy)
            error)
          :x x
          :y y))
