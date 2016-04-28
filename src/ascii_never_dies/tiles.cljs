@@ -14,22 +14,22 @@
 (def floor (assoc Tile
                   :name "floor"
                   :glyph "."
-                  :color "#00FF00"
+                  :color "#303030"
                   :is-solid false))
 (def wall  (assoc Tile
                   :name "wall"
                   :glyph "#"
-                  :color "#0000FF"
+                  :color "#808080"
                   :is-solid true))
 (def trap  (assoc Tile
                   :name "trap"
                   :glyph "^"
-                  :color "#F0F0F0"
+                  :color "#888800"
                   :is-solid false))
 (def door  (assoc Tile
                   :name "door"
                   :glyph "-"
-                  :color "#0F0F0F"
+                  :color "#880000"
                   :is-solid false))
 (def enemy (assoc Tile
                   :name "enemy"
