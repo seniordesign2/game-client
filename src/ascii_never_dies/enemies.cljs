@@ -24,19 +24,19 @@
                      :glyph "d"
                      :type "demon"
                      :color "pink"
-                     :max-health 666)
+                     :max-health 66.6)
 
               (assoc Enemy
                      :glyph "p"
                      :type "poltergeist"
                      :color "white"
-                     :max-health 1000)
+                     :max-health 100)
 
               (assoc Enemy
                      :glyph "m"
                      :type "money bag"
                      :color "brown"
-                     :max-health 7777)
+                     :max-health 777)
 
               (assoc Enemy
                      :glyph "n"

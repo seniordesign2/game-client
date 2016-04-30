@@ -26,38 +26,37 @@
     (assoc world :status :game-over)))
 
 (defn handle-move
-  "Moves the character based on the given key press."
+  "Checks the tile the player is trying to be moved into."
   [key commands]
-  (let [[x y] (player/get-pos)]
-    (case key
-      (:left :h) (if-not (w/collision? [(dec x) y])
-                   (player/move-player-left))
-      (:right :l) (if-not (w/collision? [(inc x) y])
-                    (player/move-player-right))
-      (:up :k) (if-not (w/collision? [x (dec y)])
-                 (player/move-player-up))
-      (:down :j) (if-not (w/collision? [x (inc y)])
-                   (player/move-player-down))))
-
   (let [[x y] (player/get-pos)
+        [x y] (case key
+                (:left :h)  [(dec x) y]
+                (:right :l) [(inc x) y]
+                (:up :k)    [x (dec y)]
+                (:down :j)  [x (inc y)])
         tile (screen/get-tile [x y] (w/to-screen false))]
-    (case (:name tile)
-      "trap" (do
-               (println (str "Trap: " (traps/get-effect tile)))
-               (put! commands (traps/get-effect tile)))
-      "door" (do
-               (println "DOOR!\nfrom room: " @w/room-idx)
-               (cond
-                 (= y 0) (do (w/enter-room :n)
-                             (player/enter-room w/width w/height :s))
-                 (= x (dec w/width)) (do (w/enter-room :e)
-                                         (player/enter-room w/width w/height :w))
-                 (= x 0) (do (w/enter-room :w)
-                             (player/enter-room w/width w/height :e))
-                 (= y (dec w/height)) (do (w/enter-room :s)
-                                          (player/enter-room w/width w/height :n)))
-               (println "to room: " @w/room-idx))
-      nil)))
+    (if-not (w/collision? [x y])
+      (do
+        (player/set-pos [x y])
+        (case (:name tile)
+          "trap" (do
+                   (println (str "Trap: " (traps/get-effect tile)))
+                   (put! commands (traps/get-effect tile)))
+          "door" (do
+                   (println "DOOR!\nfrom room: " @w/room-idx)
+                   (cond
+                     (= y 0) (do (w/enter-room :n)
+                                 (player/enter-room w/width w/height :s))
+                     (= x (dec w/width)) (do (w/enter-room :e)
+                                             (player/enter-room w/width w/height :w))
+                     (= x 0) (do (w/enter-room :w)
+                                 (player/enter-room w/width w/height :e))
+                     (= y (dec w/height)) (do (w/enter-room :s)
+                                              (player/enter-room w/width w/height :n)))
+                   (println "to room: " @w/room-idx))
+          nil))
+      (if (= "enemy" (:name tile))
+        (w/damage-enemy [x y] (player/get-attack))))))
 
 (defn game!
   "Game internal loop that processes commands and updates state applying functions."

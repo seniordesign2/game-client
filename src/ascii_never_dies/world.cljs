@@ -17,8 +17,8 @@
   "The index of which room the player is in."
   (atom {:x nil :y nil}))
 (def rooms
-  "A vector of every room in the game world."
-  (atom []))
+  "A set of every room in the game world."
+  (atom #{}))
 
 (defn get-map
   "Returns a map as a screen. n is what order it was loaded in alphabetically."
@@ -102,7 +102,7 @@
   "Creates a random list of enemies."
   [room]
   (let [empties (atom (empty-tiles room))]
-    (vec (for [n (range (rand-int 5))
+    (set (for [n (range (rand-int 5))
                :while (seq @empties)
                :let [spot (first (shuffle @empties))]]
            (do
@@ -165,3 +165,21 @@
   (if (or (< x 0) (< y 0) (>= x width) (>= y height))
     true
     (:is-solid (screen/get-tile [x y] (to-screen)))))
+
+(defn damage-enemy
+  "Damages the enemy in the current room with the specified coords."
+  [[x y] damage]
+  (let [room (get-current-room)
+        enemies (:enemies room)
+        target (some #(if (and (= x (:x %))
+                               (= y (:y %)))
+                        %)
+                     enemies)]
+    (swap! rooms disj room)
+    (swap! rooms conj
+           (if (<= (- (:cur-health target) damage) 0)
+             (assoc room :enemies (disj enemies target))
+             (let [enemies (disj enemies target)
+                   target (update target :cur-health - damage)
+                   enemies (conj enemies target)]
+               (assoc room :enemies enemies))))))

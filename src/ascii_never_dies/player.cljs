@@ -18,6 +18,11 @@
   []
   [(:x @player) (:y @player)])
 
+(defn get-attack
+  "Returns the player's attack strength."
+  []
+  (:attack @player))
+
 (defn enter-room
   "Moves the player to the appropriate position for enter a room
   from a given direction."
@@ -33,6 +38,7 @@
   [width height health]
   (swap! player assoc :cur-health health)
   (swap! player assoc :max-health health)
+  (swap! player assoc :attack 10)
   (let [x (int (/ width 2))
         y (int (/ height 2))]
     (set-pos [x y])))
