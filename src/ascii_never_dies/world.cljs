@@ -182,4 +182,5 @@
              (let [enemies (disj enemies target)
                    target (update target :cur-health - damage)
                    enemies (conj enemies target)]
+               (player/damage-health 5)
                (assoc room :enemies enemies))))))
