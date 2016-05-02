@@ -4,7 +4,8 @@
 
 ;; List of all traps
 (def traps [(assoc Trap :effect [:damage 5])
-            (assoc Trap :effect [:teleport 2])])
+            (assoc Trap :effect [:damage 20])
+            #_(assoc Trap :effect [:teleport 2])])
 
 (defn get-random-trap
   "Returns a random trap."

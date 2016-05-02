@@ -72,14 +72,14 @@
           
           :tick (let [new-world (update-world world)
                       status (:status new-world)]
+                  (-> (dommy/sel1 :#board)
+                      (dommy/set-html! (w/print-board)))
+                  (-> (dommy/sel1 :#health)
+                      (dommy/set-text! (str "HP: " (player/print-health))))
                   (if (= status :game-over)
                     (println "GAME OVER!")
                     (do
                       (plan-tick! 0 commands)
-                      (-> (dommy/sel1 :#board)
-                          (dommy/set-html! (w/print-board)))
-                      (-> (dommy/sel1 :#health)
-                          (dommy/set-text! (str "HP: " (player/print-health))))
                       (recur new-world))))
 
           :move (do
