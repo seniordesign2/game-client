@@ -77,7 +77,12 @@
                   (-> (dommy/sel1 :#health)
                       (dommy/set-text! (str "HP: " (player/print-health))))
                   (if (= status :game-over)
-                    (js/alert "GAME OVER!")
+                    (do
+                      (js/alert "GAME OVER!")
+                      (player/init w/width w/height 100)
+                      (w/init)
+                      (plan-tick! 0 commands)
+                      (recur initial-world))
                     (do
                       (plan-tick! 0 commands)
                       (recur new-world))))

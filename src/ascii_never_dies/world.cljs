@@ -51,7 +51,7 @@
 (defn set-rooms
   "Resets the current vector of rooms."
   [rs]
-  (reset! rooms rs))
+  (reset! rooms (set rs)))
 
 (defn init
   "Loads a random map for the starting room."
@@ -60,7 +60,7 @@
                         :scr (get-random-map)
                         :x 0 :y 0)]
     (reset! room-idx {:x 0 :y 0})
-    (swap! rooms conj new-room)))
+    (reset! rooms #{new-room})))
 
 (defn get-new-coords
   "Based on the direction passed to it,
@@ -170,7 +170,7 @@
   "Damages the enemy in the current room with the specified coords."
   [[x y] damage]
   (let [room (get-current-room)
-        enemies (:enemies room)
+        enemies (set (:enemies room))
         target (some #(if (and (= x (:x %))
                                (= y (:y %)))
                         %)
