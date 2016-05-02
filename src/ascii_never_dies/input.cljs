@@ -87,7 +87,7 @@
   "Transform a key up to the command we will send to the game."
   [key]
   (cond
-    (action-keys key) [:damage 5]))
+    (action-keys key) [:damage -5]))
 
 (defn init-events!
   "Initialize event processing. It takes all the key presses
